@@ -1,0 +1,32 @@
+name: Build and Deploy to dist branch
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+        
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install and Build 🔧
+        run: |
+          npm ci
+          npm run build
+          
+      - name: Deploy to dist branch 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist      # The folder containing build output
+          branch: dist      # The branch to deploy to
+          clean: true       # Automatically remove deleted files
+          single-commit: true  # Push as a single commit (overwrite branch history) 

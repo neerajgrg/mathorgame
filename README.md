@@ -128,57 +128,25 @@ To test the PWA functionality:
 
 ## Deploying to GitHub Pages
 
-MathOrGame is fully compatible with GitHub Pages. There are several ways to deploy:
+MathOrGame is fully compatible with GitHub Pages. We use a simple automated deployment approach:
 
-### Option 1: Using GitHub Actions (Automatic)
+### Automated Deployment to "dist" Branch
 
-This repository includes a GitHub Actions workflow that automatically builds and deploys your app:
+This repository includes a GitHub Actions workflow that automatically:
+1. Builds your project when you push to main/master branch
+2. Pushes only the built files to a separate "dist" branch
+3. This keeps your main branch clean while having the built files ready for GitHub Pages
 
-1. Push your code to GitHub (main or master branch)
-2. Go to your repository Settings → Pages
-3. Under "Build and deployment" select:
-   - Source: "GitHub Actions"
-4. The app will build and deploy automatically on each push
+To set up:
+1. The workflow file is already in place (`.github/workflows/deploy-to-dist.yml`)
+2. Push your changes to the main branch
+3. GitHub Actions will automatically create a "dist" branch with only the built files
+4. Go to your GitHub repository's Settings → Pages
+5. Set Source to "Deploy from a branch"
+6. Select Branch: "dist" and Folder: "/" (root)
+7. Click Save
 
-If you encounter the "Missing download info for actions/upload-artifact@v3" error:
-- The workflow has been updated to use compatible versions
-- Just push the updated .github/workflows/deploy.yml file
-
-### Option 2: Using gh-pages package (Manual)
-
-For manual deployment using npm:
-
-1. Install gh-pages if not already installed:
-   ```bash
-   npm install --save-dev gh-pages
-   ```
-
-2. Deploy with a single command:
-   ```bash
-   npm run deploy
-   ```
-
-3. Your app will be deployed to the gh-pages branch
-
-### Option 3: Manual Deployment
-
-If you prefer fully manual deployment:
-
-1. Build your project:
-   ```bash
-   npm run build
-   ```
-
-2. The build process creates a `dist` folder with all deployment files
-
-3. Push the contents of the `dist` folder to your preferred branch (e.g., gh-pages)
-
-4. In your GitHub repository settings:
-   - Go to Settings → Pages
-   - Under "Build and deployment" select:
-     - Source: "Deploy from a branch"
-     - Branch: Choose your branch (e.g., gh-pages)
-     - Folder: "/" (root)
+Now every push to main will automatically update your GitHub Pages site!
 
 ### Important Notes for GitHub Pages
 
