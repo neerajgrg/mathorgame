@@ -27,6 +27,24 @@ jobs:
           npm install
           npm run build
           
+      - name: Ensure icon files exist 📁
+        run: |
+          mkdir -p dist/icons
+          # Create a basic icon if not exists
+          if [ ! -f public/icons/icon-144x144.png ]; then
+            echo "Creating placeholder icons..."
+            mkdir -p public/icons
+            # Create a simple colored square for placeholder icon (requires ImageMagick)
+            sudo apt-get update && sudo apt-get install -y imagemagick
+            convert -size 144x144 xc:blue -gravity center -pointsize 20 -font Arial -fill white -annotate 0 "Math Game" public/icons/icon-144x144.png
+            convert -size 192x192 xc:blue -gravity center -pointsize 24 -font Arial -fill white -annotate 0 "Math Game" public/icons/icon-192x192.png
+            convert -size 512x512 xc:blue -gravity center -pointsize 48 -font Arial -fill white -annotate 0 "Math Game" public/icons/icon-512x512.png
+            ls -la public/icons/
+          fi
+          # Copy all icon files to dist/icons
+          cp -r public/icons/* dist/icons/
+          ls -la dist/icons/
+          
       - name: Deploy to dist branch 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
