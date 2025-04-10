@@ -61,6 +61,8 @@ function init() {
 // Homepage
 function homePage() {
   app.innerHTML = `
+    <div id="bg-canvas"></div>
+    
     <header>
       <div class="container">
         <h1 class="logo">MathOrGame</h1>
@@ -79,56 +81,164 @@ function homePage() {
         <h2>Welcome to MathOrGame!</h2>
         <p style="max-width: 600px; margin: 20px auto;">
           An interactive 3D math learning experience for grades 1-8.
-          Choose a topic below to start playing!
+          Choose a category below to start playing!
         </p>
       </div>
       
+      <h3 style="margin: 20px 0; text-align: center;">Featured Games</h3>
+      
       <div class="grid">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header" style="background-color: #4CAF50;">
+            <h3>Dungeon Escape</h3>
+          </div>
+          <div class="card-body">
+            <p>Solve addition and subtraction problems to escape the dungeon!</p>
+          </div>
+          <div class="card-footer">
+            <a href="#/game?id=dungeon-escape" class="btn">Play Now</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header" style="background-color: #2196F3;">
+            <h3>Shape Builder</h3>
+          </div>
+          <div class="card-body">
+            <p>Match 3D shapes and learn geometry concepts through play!</p>
+          </div>
+          <div class="card-footer">
+            <a href="#/game?id=shape-builder" class="btn">Play Now</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header" style="background-color: #9C27B0;">
+            <h3>Volume Quest</h3>
+          </div>
+          <div class="card-body">
+            <p>Calculate volumes of 3D objects to progress through levels!</p>
+          </div>
+          <div class="card-footer">
+            <a href="#/game?id=volume-quest" class="btn">Play Now</a>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header" style="background-color: #FF9800;">
+            <h3>Pattern Puzzle</h3>
+          </div>
+          <div class="card-body">
+            <p>Complete patterns and develop algebraic thinking skills!</p>
+          </div>
+          <div class="card-footer">
+            <a href="#/game?id=pattern-puzzle" class="btn">Play Now</a>
+          </div>
+        </div>
+      </div>
+      
+      <h3 style="margin: 40px 0 20px; text-align: center;">Math Categories</h3>
+      
+      <div class="grid">
+        <div class="card">
+          <div class="card-header" style="background-color: #E91E63;">
             <h3>Arithmetic</h3>
           </div>
           <div class="card-body">
             <p>Addition, subtraction, multiplication, and division games</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=dungeon-escape" class="btn">Play Dungeon Escape</a>
+            <a href="#/games?topic=arithmetic" class="btn">View Games</a>
           </div>
         </div>
         
         <div class="card">
-          <div class="card-header">
+          <div class="card-header" style="background-color: #00BCD4;">
             <h3>Geometry</h3>
           </div>
           <div class="card-body">
             <p>Shapes, angles, and spatial reasoning games</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=shape-builder" class="btn">Play Shape Builder</a>
+            <a href="#/games?topic=geometry" class="btn">View Games</a>
           </div>
         </div>
         
         <div class="card">
-          <div class="card-header">
+          <div class="card-header" style="background-color: #8BC34A;">
             <h3>Data & Measurement</h3>
           </div>
           <div class="card-body">
             <p>Volume, area, and data interpretation games</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=volume-quest" class="btn">Play Volume Quest</a>
+            <a href="#/games?topic=measurement" class="btn">View Games</a>
           </div>
         </div>
         
         <div class="card">
-          <div class="card-header">
+          <div class="card-header" style="background-color: #673AB7;">
             <h3>Logic & Algebra</h3>
           </div>
           <div class="card-body">
             <p>Equations, patterns, and logical reasoning games</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=pattern-puzzle" class="btn">Play Pattern Puzzle</a>
+            <a href="#/games?topic=algebra" class="btn">View Games</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="advanced-section">
+        <h3 style="margin: 40px 0 20px; text-align: center;">Advanced Topics</h3>
+        
+        <div class="grid">
+          <div class="card">
+            <div class="card-header" style="background-color: #009688;">
+              <h3>3D Geometry</h3>
+            </div>
+            <div class="card-body">
+              <p>Explore complex 3D shapes and their properties</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header" style="background-color: #795548;">
+              <h3>Probability</h3>
+            </div>
+            <div class="card-body">
+              <p>Games that teach chance, odds, and statistical concepts</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header" style="background-color: #607D8B;">
+              <h3>Fractions</h3>
+            </div>
+            <div class="card-body">
+              <p>Master fractions through interactive visual games</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="card-header" style="background-color: #FF5722;">
+              <h3>Calculus</h3>
+            </div>
+            <div class="card-body">
+              <p>Introduction to derivatives and integrals through visualization</p>
+            </div>
+            <div class="card-footer">
+              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
+            </div>
           </div>
         </div>
       </div>
@@ -145,6 +255,11 @@ function homePage() {
       </div>
     </footer>
   `;
+  
+  // Initialize 3D background
+  setTimeout(() => {
+    init3DBackground();
+  }, 100);
   
   // Wait for the DOM to be fully updated before initializing the 3D scene
   setTimeout(() => {
@@ -655,6 +770,143 @@ function initHomeAnimation() {
   setTimeout(handleResize, 100);
   
   // Start animation loop
+  animate();
+}
+
+// Initialize 3D background
+function init3DBackground() {
+  const container = document.getElementById('bg-canvas');
+  
+  if (!container) {
+    console.error('Could not find bg-canvas element');
+    return;
+  }
+  
+  // Create a scene
+  const scene = new THREE.Scene();
+  
+  // Create a camera
+  const camera = new THREE.PerspectiveCamera(
+    75, 
+    window.innerWidth / window.innerHeight,
+    0.1, 
+    1000
+  );
+  camera.position.z = 20;
+  
+  // Create a renderer with alpha
+  const renderer = new THREE.WebGLRenderer({ 
+    alpha: true,
+    antialias: true 
+  });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x000000, 0);
+  
+  // Add the renderer to the DOM
+  container.appendChild(renderer.domElement);
+  
+  // Create background objects
+  const objects = [];
+  
+  // Create random math symbols
+  const symbols = ['+', '-', '×', '÷', '=', '∑', '∫', 'π', '√', '∞'];
+  const symbolGeometries = [
+    new THREE.BoxGeometry(0.5, 0.5, 0.5),
+    new THREE.SphereGeometry(0.3, 32, 32),
+    new THREE.TetrahedronGeometry(0.4),
+    new THREE.OctahedronGeometry(0.4),
+    new THREE.IcosahedronGeometry(0.4)
+  ];
+  
+  // Create 50 random shapes
+  for (let i = 0; i < 50; i++) {
+    // Choose a random geometry
+    const geometry = symbolGeometries[Math.floor(Math.random() * symbolGeometries.length)];
+    
+    // Create a material with a random color
+    const material = new THREE.MeshPhongMaterial({
+      color: new THREE.Color(`hsl(${Math.random() * 360}, 50%, 70%)`),
+      transparent: true,
+      opacity: 0.7,
+      shininess: 100
+    });
+    
+    const object = new THREE.Mesh(geometry, material);
+    
+    // Position randomly in 3D space
+    object.position.x = Math.random() * 80 - 40;
+    object.position.y = Math.random() * 80 - 40;
+    object.position.z = Math.random() * 30 - 35;
+    
+    // Set random rotation
+    object.rotation.x = Math.random() * Math.PI;
+    object.rotation.y = Math.random() * Math.PI;
+    
+    // Set random animation parameters
+    object.userData = {
+      rotationSpeed: {
+        x: (Math.random() - 0.5) * 0.01,
+        y: (Math.random() - 0.5) * 0.01,
+        z: (Math.random() - 0.5) * 0.01
+      },
+      moveSpeed: {
+        x: (Math.random() - 0.5) * 0.05,
+        y: (Math.random() - 0.5) * 0.05,
+        z: (Math.random() - 0.5) * 0.02
+      }
+    };
+    
+    scene.add(object);
+    objects.push(object);
+  }
+  
+  // Add ambient light
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+  
+  // Add directional light
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+  directionalLight.position.set(1, 1, 1);
+  scene.add(directionalLight);
+  
+  // Animation
+  function animate() {
+    requestAnimationFrame(animate);
+    
+    // Animate objects
+    objects.forEach(obj => {
+      // Rotate each object
+      obj.rotation.x += obj.userData.rotationSpeed.x;
+      obj.rotation.y += obj.userData.rotationSpeed.y;
+      obj.rotation.z += obj.userData.rotationSpeed.z;
+      
+      // Move each object
+      obj.position.x += obj.userData.moveSpeed.x;
+      obj.position.y += obj.userData.moveSpeed.y;
+      obj.position.z += obj.userData.moveSpeed.z;
+      
+      // Reset if out of bounds
+      if (obj.position.x > 40) obj.position.x = -40;
+      if (obj.position.x < -40) obj.position.x = 40;
+      if (obj.position.y > 40) obj.position.y = -40;
+      if (obj.position.y < -40) obj.position.y = 40;
+      if (obj.position.z > 0) obj.position.z = -40;
+      if (obj.position.z < -40) obj.position.z = 0;
+    });
+    
+    renderer.render(scene, camera);
+  }
+  
+  // Handle window resize
+  function handleResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+  
+  window.addEventListener('resize', handleResize);
+  
+  // Start animation
   animate();
 }
 
