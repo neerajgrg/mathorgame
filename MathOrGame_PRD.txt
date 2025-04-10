@@ -1,0 +1,117 @@
+
+MathOrGame — Product Requirements Document (PRD)
+
+📌 Project Overview
+MathOrGame is a frontend-only, browser-based educational website that uses Three.js to teach math (up to 8th standard) through interactive and entertaining 3D games. The aim is to make learning fun, accessible, and gamified—all without backend services.
+
+🎯 Goals
+- Create an engaging math-learning experience through 3D browser games
+- Cover major math topics from Grades 1–8
+- Monetize via freemium, ads, or donations
+- Ensure full functionality offline and on low-end devices
+
+🧱 Tech Stack
+- Frontend: HTML, CSS, JavaScript
+- 3D Rendering: Three.js
+- Build Tool: Vite (or Parcel)
+- Deployment: GitHub Pages / Netlify / Vercel
+- State Saving: localStorage
+
+📂 Key Features (MVP)
+Feature | Description
+--------|-------------
+Homepage | Branding, tagline, and “Start Learning” CTA
+Topics Page | Grid layout of math categories (Arithmetic, Geometry, etc.)
+Game Launcher | Lists available games per topic with preview cards
+3D Game Engine | Each game built with Three.js and gamification layer
+Progress Tracking | LocalStorage-based tracking of scores/completion
+Responsive UI | Works on desktop, tablets, and phones
+Monetization | Ko-fi/Buy Me a Coffee button and/or ad placeholders
+
+🗂 Game Ideas (MVP Set)
+Topic | Game Name | Concept
+------|-----------|--------
+Addition/Subtraction | Dungeon Escape | Solve equations to open doors
+Multiplication | Space Shooter | Shoot correct products to survive
+Geometry | Shape Builder | Drag/drop to build shapes and match outlines
+Volume | Volume Quest | Measure and choose correct volume to pass
+
+🧭 Navigation Map
+[ Home ]
+   ↓
+[ Topics ]
+   ↓
+[ Game List ] ←→ [ Game Preview ]
+   ↓
+[ Game Screen ] → [ Score / Retry ]
+
+🖼️ Wireframes (Text Format)
+
+1. Homepage
++-------------------------------------+
+|     MathOrGame (Logo)              |
+|-------------------------------------|
+|  "Learn Math. Play Game." (Tagline) |
+|                                     |
+|   [ Start Learning ] (CTA Button)   |
+|                                     |
+|      🔗 About  🔗 Support           |
++-------------------------------------+
+
+2. Topics Page
++--------------------------+
+|       Choose a Topic     |
+|--------------------------|
+| 📘 Arithmetic           |
+| 📐 Geometry             |
+| 📊 Data & Measurement   |
+| 🧠 Logic & Algebra       |
++--------------------------+
+
+3. Game Launcher
++------------------------------------+
+|       Games in Arithmetic          |
+|------------------------------------|
+| [🔒] Dungeon Escape   [▶️ Play]     |
+| [   ] Space Invaders  [▶️ Play]     |
+| [   ] Number Bouncer  [▶️ Play]     |
++------------------------------------+
+
+4. Game Screen (Three.js Canvas)
++-----------------------------+
+| [Back]         Score: 120  |
+|                             |
+|  [THREE.JS 3D Canvas Area] |
+|                             |
+|         [ Answer Input ]   |
++-----------------------------+
+
+5. Game Over / Score Page
++------------------------------+
+|      🎉 Great Job!           |
+|    Your Score: 150           |
+|                              |
+|  [ Try Again ] [ Home ]      |
++------------------------------+
+
+📆 Development Phases
+
+✅ Phase 1 — Static MVP
+- Build homepage, topics page, and static game mock
+- Setup basic routing (client-side)
+- Include Ko-fi donation and logo
+
+🎮 Phase 2 — First Playable Game
+- Create “Dungeon Escape” with Three.js
+- Add level progression and scoring
+- Store progress in localStorage
+
+🚀 Phase 3 — Game Library
+- Add 2–3 more games
+- Create Game Preview Launcher
+- Add mobile responsive tweaks
+
+💸 Phase 4 — Monetization
+- Integrate ads or unlockable levels
+- Optimize performance
+- Start social presence (YouTube/Instagram)
