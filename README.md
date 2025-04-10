@@ -128,25 +128,57 @@ To test the PWA functionality:
 
 ## Deploying to GitHub Pages
 
-MathOrGame is fully compatible with GitHub Pages. Follow these steps to deploy:
+MathOrGame is fully compatible with GitHub Pages. There are several ways to deploy:
 
-1. First, build your project:
+### Option 1: Using GitHub Actions (Automatic)
+
+This repository includes a GitHub Actions workflow that automatically builds and deploys your app:
+
+1. Push your code to GitHub (main or master branch)
+2. Go to your repository Settings → Pages
+3. Under "Build and deployment" select:
+   - Source: "GitHub Actions"
+4. The app will build and deploy automatically on each push
+
+If you encounter the "Missing download info for actions/upload-artifact@v3" error:
+- The workflow has been updated to use compatible versions
+- Just push the updated .github/workflows/deploy.yml file
+
+### Option 2: Using gh-pages package (Manual)
+
+For manual deployment using npm:
+
+1. Install gh-pages if not already installed:
+   ```bash
+   npm install --save-dev gh-pages
+   ```
+
+2. Deploy with a single command:
+   ```bash
+   npm run deploy
+   ```
+
+3. Your app will be deployed to the gh-pages branch
+
+### Option 3: Manual Deployment
+
+If you prefer fully manual deployment:
+
+1. Build your project:
    ```bash
    npm run build
    ```
 
-2. If you're deploying to a user or organization site (username.github.io), copy all files from the `dist` folder to the root of your repository.
+2. The build process creates a `dist` folder with all deployment files
 
-3. If you're deploying to a project site (username.github.io/mathorgame), copy all files from the `dist` folder to the root of your repository.
+3. Push the contents of the `dist` folder to your preferred branch (e.g., gh-pages)
 
-4. For project sites, make sure your repository settings are configured to deploy from the branch where you pushed the build files.
-
-5. In your GitHub repository, go to Settings > Pages and:
-   - Select the branch containing your build files
-   - Choose the root folder (/) as the source
-   - Click Save
-
-6. GitHub will provide you with a URL where your site is published.
+4. In your GitHub repository settings:
+   - Go to Settings → Pages
+   - Under "Build and deployment" select:
+     - Source: "Deploy from a branch"
+     - Branch: Choose your branch (e.g., gh-pages)
+     - Folder: "/" (root)
 
 ### Important Notes for GitHub Pages
 
