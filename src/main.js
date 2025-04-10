@@ -7,6 +7,9 @@ import { setupDungeonEscape } from './games/DungeonEscape.js';
 import { setupShapeBuilder } from './games/ShapeBuilder.js';
 import { setupVolumeQuest } from './games/VolumeQuest.js';
 import { setupPatternPuzzle } from './games/PatternPuzzle.js';
+import { setupSpaceShooter } from './games/SpaceShooter.js';
+import { setupTimesTables } from './games/TimesTables.js';
+import { setupDecimalDash } from './games/DecimalDash.js';
 
 // DOM Elements
 const app = document.querySelector('#app');
@@ -56,6 +59,96 @@ function init() {
   
   // Add debug console log to verify router is working
   console.log('Router initialized with hash:', window.location.hash);
+  
+  // Setup PWA installation
+  setupPWA();
+}
+
+// Setup PWA installation functionality
+function setupPWA() {
+  let deferredPrompt;
+  const installContainer = document.createElement('div');
+  
+  // Style for install prompt
+  installContainer.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: none;
+    z-index: 1000;
+    font-family: 'Poppins', sans-serif;
+  `;
+  
+  installContainer.innerHTML = `
+    <p style="margin: 0 0 10px 0; font-weight: bold;">Install MathOrGame</p>
+    <p style="margin: 0 0 15px 0; font-size: 0.9rem;">Install this app on your device for offline use!</p>
+    <div style="display: flex; gap: 10px;">
+      <button id="installBtn" style="
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: bold;
+      ">Install</button>
+      <button id="installCancelBtn" style="
+        background: transparent;
+        border: none;
+        padding: 8px 15px;
+        cursor: pointer;
+        color: #666;
+      ">Not now</button>
+    </div>
+  `;
+  
+  document.body.appendChild(installContainer);
+  
+  // Handle beforeinstallprompt event
+  window.addEventListener('beforeinstallprompt', (e) => {
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    e.preventDefault();
+    
+    // Stash the event so it can be triggered later
+    deferredPrompt = e;
+    
+    // Show the install button
+    installContainer.style.display = 'block';
+  });
+  
+  // Installation button click handler
+  document.getElementById('installBtn').addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    
+    // Show the installation prompt
+    deferredPrompt.prompt();
+    
+    // Wait for the user to respond to the prompt
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to install prompt: ${outcome}`);
+    
+    // Clear the deferred prompt variable
+    deferredPrompt = null;
+    
+    // Hide the install button
+    installContainer.style.display = 'none';
+  });
+  
+  // Cancel button click handler
+  document.getElementById('installCancelBtn').addEventListener('click', () => {
+    installContainer.style.display = 'none';
+  });
+  
+  // Check if app was successfully installed
+  window.addEventListener('appinstalled', (e) => {
+    console.log('App was installed', e);
+    // Hide the install button
+    installContainer.style.display = 'none';
+  });
 }
 
 // Homepage
@@ -67,6 +160,11 @@ function homePage() {
       <div class="container">
         <h1 class="logo">MathOrGame</h1>
         <p class="tagline">Learn Math. Play Games.</p>
+        <div class="mobile-menu-toggle">
+          <span class="line1"></span>
+          <span class="line2"></span>
+          <span class="line3"></span>
+        </div>
       </div>
     </header>
     
@@ -77,181 +175,117 @@ function homePage() {
     </nav>
     
     <main class="container">
-      <div style="text-align: center; padding: 40px 0 20px;">
+      <div class="welcome-section fade-in">
         <h2>Welcome to MathOrGame!</h2>
-        <p style="max-width: 600px; margin: 20px auto;">
-          An interactive 3D math learning experience for grades 1-8.
-          Choose a category below to start playing!
-        </p>
+        <p>An interactive 3D math learning experience designed to make mathematics fun and engaging through immersive games.</p>
       </div>
       
-      <h3 style="margin: 20px 0; text-align: center;">Featured Games</h3>
+      <div class="grade-title fade-in">
+        <h3>Select Your Grade</h3>
+      </div>
       
       <div class="grid">
-        <div class="card">
-          <div class="card-header" style="background-color: #4CAF50;">
-            <h3>Dungeon Escape</h3>
+        <div class="card fade-in" style="animation-delay: 0.1s">
+          <div class="card-header" style="background: linear-gradient(135deg, #4CAF50, #2E7D32);">
+            <h3>1st Grade</h3>
           </div>
           <div class="card-body">
-            <p>Solve addition and subtraction problems to escape the dungeon!</p>
+            <p>Basic addition, subtraction, shapes, and patterns</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=dungeon-escape" class="btn">Play Now</a>
+            <a href="#/topics?grade=1" class="btn">View Topics</a>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header" style="background-color: #2196F3;">
-            <h3>Shape Builder</h3>
+        <div class="card fade-in" style="animation-delay: 0.2s">
+          <div class="card-header" style="background: linear-gradient(135deg, #2196F3, #0D47A1);">
+            <h3>2nd Grade</h3>
           </div>
           <div class="card-body">
-            <p>Match 3D shapes and learn geometry concepts through play!</p>
+            <p>Addition, subtraction, basic geometry, and measurement</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=shape-builder" class="btn">Play Now</a>
+            <a href="#/topics?grade=2" class="btn">View Topics</a>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header" style="background-color: #9C27B0;">
-            <h3>Volume Quest</h3>
+        <div class="card fade-in" style="animation-delay: 0.3s">
+          <div class="card-header" style="background: linear-gradient(135deg, #9C27B0, #4A148C);">
+            <h3>3rd Grade</h3>
           </div>
           <div class="card-body">
-            <p>Calculate volumes of 3D objects to progress through levels!</p>
+            <p>Multiplication, division, fractions, and area</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=volume-quest" class="btn">Play Now</a>
+            <a href="#/topics?grade=3" class="btn">View Topics</a>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header" style="background-color: #FF9800;">
-            <h3>Pattern Puzzle</h3>
+        <div class="card fade-in" style="animation-delay: 0.4s">
+          <div class="card-header" style="background: linear-gradient(135deg, #FF9800, #E65100);">
+            <h3>4th Grade</h3>
           </div>
           <div class="card-body">
-            <p>Complete patterns and develop algebraic thinking skills!</p>
+            <p>Multi-digit arithmetic, factors, and geometry</p>
           </div>
           <div class="card-footer">
-            <a href="#/game?id=pattern-puzzle" class="btn">Play Now</a>
-          </div>
-        </div>
-      </div>
-      
-      <h3 style="margin: 40px 0 20px; text-align: center;">Math Categories</h3>
-      
-      <div class="grid">
-        <div class="card">
-          <div class="card-header" style="background-color: #E91E63;">
-            <h3>Arithmetic</h3>
-          </div>
-          <div class="card-body">
-            <p>Addition, subtraction, multiplication, and division games</p>
-          </div>
-          <div class="card-footer">
-            <a href="#/games?topic=arithmetic" class="btn">View Games</a>
+            <a href="#/topics?grade=4" class="btn">View Topics</a>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header" style="background-color: #00BCD4;">
-            <h3>Geometry</h3>
+        <div class="card fade-in" style="animation-delay: 0.5s">
+          <div class="card-header" style="background: linear-gradient(135deg, #E91E63, #880E4F);">
+            <h3>5th Grade</h3>
           </div>
           <div class="card-body">
-            <p>Shapes, angles, and spatial reasoning games</p>
+            <p>Decimals, fractions, and volume</p>
           </div>
           <div class="card-footer">
-            <a href="#/games?topic=geometry" class="btn">View Games</a>
+            <a href="#/topics?grade=5" class="btn">View Topics</a>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header" style="background-color: #8BC34A;">
-            <h3>Data & Measurement</h3>
+        <div class="card fade-in" style="animation-delay: 0.6s">
+          <div class="card-header" style="background: linear-gradient(135deg, #00BCD4, #006064);">
+            <h3>6th Grade</h3>
           </div>
           <div class="card-body">
-            <p>Volume, area, and data interpretation games</p>
+            <p>Ratios, equations, and statistical distributions</p>
           </div>
           <div class="card-footer">
-            <a href="#/games?topic=measurement" class="btn">View Games</a>
+            <a href="#/topics?grade=6" class="btn">View Topics</a>
           </div>
         </div>
         
-        <div class="card">
-          <div class="card-header" style="background-color: #673AB7;">
-            <h3>Logic & Algebra</h3>
+        <div class="card fade-in" style="animation-delay: 0.7s">
+          <div class="card-header" style="background: linear-gradient(135deg, #8BC34A, #33691E);">
+            <h3>7th Grade</h3>
           </div>
           <div class="card-body">
-            <p>Equations, patterns, and logical reasoning games</p>
+            <p>Proportional relationships, expressions, and probability</p>
           </div>
           <div class="card-footer">
-            <a href="#/games?topic=algebra" class="btn">View Games</a>
+            <a href="#/topics?grade=7" class="btn">View Topics</a>
           </div>
         </div>
-      </div>
-      
-      <div class="advanced-section">
-        <h3 style="margin: 40px 0 20px; text-align: center;">Advanced Topics</h3>
         
-        <div class="grid">
-          <div class="card">
-            <div class="card-header" style="background-color: #009688;">
-              <h3>3D Geometry</h3>
-            </div>
-            <div class="card-body">
-              <p>Explore complex 3D shapes and their properties</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
-            </div>
+        <div class="card fade-in" style="animation-delay: 0.8s">
+          <div class="card-header" style="background: linear-gradient(135deg, #673AB7, #311B92);">
+            <h3>8th Grade</h3>
           </div>
-          
-          <div class="card">
-            <div class="card-header" style="background-color: #795548;">
-              <h3>Probability</h3>
-            </div>
-            <div class="card-body">
-              <p>Games that teach chance, odds, and statistical concepts</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
-            </div>
+          <div class="card-body">
+            <p>Linear equations, functions, and geometric transformations</p>
           </div>
-          
-          <div class="card">
-            <div class="card-header" style="background-color: #607D8B;">
-              <h3>Fractions</h3>
-            </div>
-            <div class="card-body">
-              <p>Master fractions through interactive visual games</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
-            </div>
-          </div>
-          
-          <div class="card">
-            <div class="card-header" style="background-color: #FF5722;">
-              <h3>Calculus</h3>
-            </div>
-            <div class="card-body">
-              <p>Introduction to derivatives and integrals through visualization</p>
-            </div>
-            <div class="card-footer">
-              <a href="#" class="btn btn-disabled" disabled>Coming Soon</a>
-            </div>
+          <div class="card-footer">
+            <a href="#/topics?grade=8" class="btn">View Topics</a>
           </div>
         </div>
-      </div>
-      
-      <div style="margin-top: 40px;">
-        <h3 style="text-align: center; margin-bottom: 15px;">Interactive 3D Math Playground</h3>
-        <div id="three-container" style="width: 100%; height: 400px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;"></div>
       </div>
     </main>
     
     <footer>
       <div class="container">
-        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank" style="color: white;">Support Us</a></p>
+        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank">Support Us</a></p>
       </div>
     </footer>
   `;
@@ -261,124 +295,86 @@ function homePage() {
     init3DBackground();
   }, 100);
   
-  // Wait for the DOM to be fully updated before initializing the 3D scene
-  setTimeout(() => {
-    initHomeAnimation();
-  }, 100);
+  // Add event listener for mobile menu toggle
+  setupMobileMenu();
 }
 
 // Topics page
-function topicsPage() {
-  app.innerHTML = `
-    <header>
-      <div class="container">
-        <h1 class="logo">MathOrGame</h1>
-        <p class="tagline">Learn Math. Play Games.</p>
-      </div>
-    </header>
-    
-    <nav>
-      <a href="#/">Home</a>
-      <a href="#/topics">Topics</a>
-      <a href="#/about">About</a>
-    </nav>
-    
-    <main class="container">
-      <h2 style="margin: 30px 0 20px; text-align: center;">Choose a Topic</h2>
-      
-      <div class="grid">
-        <div class="card">
-          <div class="card-header">
-            <h3>Arithmetic</h3>
-          </div>
-          <div class="card-body">
-            <p>Addition, subtraction, multiplication, and division games</p>
-          </div>
-          <div class="card-footer">
-            <a href="#/games?topic=arithmetic" class="btn">View Games</a>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <h3>Geometry</h3>
-          </div>
-          <div class="card-body">
-            <p>Shapes, angles, and spatial reasoning games</p>
-          </div>
-          <div class="card-footer">
-            <a href="#/games?topic=geometry" class="btn">View Games</a>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <h3>Data & Measurement</h3>
-          </div>
-          <div class="card-body">
-            <p>Volume, area, and data interpretation games</p>
-          </div>
-          <div class="card-footer">
-            <a href="#/games?topic=measurement" class="btn">View Games</a>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">
-            <h3>Logic & Algebra</h3>
-          </div>
-          <div class="card-body">
-            <p>Equations, patterns, and logical reasoning games</p>
-          </div>
-          <div class="card-footer">
-            <a href="#/games?topic=algebra" class="btn">View Games</a>
-          </div>
-        </div>
-      </div>
-    </main>
-    
-    <footer>
-      <div class="container">
-        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank" style="color: white;">Support Us</a></p>
-      </div>
-    </footer>
-  `;
-}
-
-// Games page
-function gamesPage(path) {
+function topicsPage(path) {
   const params = new URLSearchParams(path.split('?')[1] || '');
-  const topic = params.get('topic') || 'arithmetic';
+  const grade = params.get('grade') || '1';
   
-  let topicTitle = 'Arithmetic';
-  let games = [];
+  let gradeTitle = `${grade}st Grade`;
+  if (grade === '2') gradeTitle = '2nd Grade';
+  if (grade === '3') gradeTitle = '3rd Grade';
+  if (grade >= '4') gradeTitle = `${grade}th Grade`;
   
-  switch(topic) {
-    case 'arithmetic':
-      topicTitle = 'Arithmetic';
-      games = [
-        { id: 'dungeon-escape', name: 'Dungeon Escape', description: 'Solve addition and subtraction equations to escape the dungeon', unlocked: true },
-        { id: 'space-shooter', name: 'Space Shooter', description: 'Practice multiplication by shooting the correct answers', unlocked: false },
-        { id: 'number-bouncer', name: 'Number Bouncer', description: 'Sort even and odd numbers by bouncing them to the right side', unlocked: false }
+  let topics = [];
+  
+  // Define topics for each grade
+  switch(grade) {
+    case '1':
+      topics = [
+        { id: 'counting', name: 'Counting', description: 'Count objects and learn number sequences', icon: '🔢' },
+        { id: 'addition', name: 'Addition', description: 'Basic addition with numbers 1-20', icon: '➕' },
+        { id: 'subtraction', name: 'Subtraction', description: 'Basic subtraction with numbers 1-20', icon: '➖' },
+        { id: 'shapes', name: 'Shapes', description: 'Identify and classify basic 2D shapes', icon: '◯' }
       ];
       break;
-    case 'geometry':
-      topicTitle = 'Geometry';
-      games = [
-        { id: 'shape-builder', name: 'Shape Builder', description: 'Build shapes and match the outlines to learn geometry', unlocked: true },
-        { id: 'angle-hunter', name: 'Angle Hunter', description: 'Find the correct angles in 3D environments', unlocked: false }
+    case '2':
+      topics = [
+        { id: 'addition', name: 'Addition', description: 'Addition with numbers up to 100', icon: '➕' },
+        { id: 'subtraction', name: 'Subtraction', description: 'Subtraction with numbers up to 100', icon: '➖' },
+        { id: 'money', name: 'Money', description: 'Counting money and making change', icon: '💰' },
+        { id: 'time', name: 'Time', description: 'Telling time to the nearest 5 minutes', icon: '🕒' }
       ];
       break;
-    case 'measurement':
-      topicTitle = 'Data & Measurement';
-      games = [
-        { id: 'volume-quest', name: 'Volume Quest', description: 'Calculate the volume of 3D objects to progress', unlocked: true }
+    case '3':
+      topics = [
+        { id: 'multiplication', name: 'Multiplication', description: 'Multiplication facts and properties', icon: '✖️' },
+        { id: 'division', name: 'Division', description: 'Basic division concepts and facts', icon: '➗' },
+        { id: 'fractions', name: 'Fractions', description: 'Introduction to fractions and equivalent fractions', icon: '🔢' },
+        { id: 'area', name: 'Area', description: 'Calculate area of rectangles and squares', icon: '📏' }
       ];
       break;
-    case 'algebra':
-      topicTitle = 'Logic & Algebra';
-      games = [
-        { id: 'pattern-puzzle', name: 'Pattern Puzzle', description: 'Complete the pattern by finding the missing piece', unlocked: true }
+    case '4':
+      topics = [
+        { id: 'multidigit', name: 'Multi-digit Math', description: 'Multi-digit multiplication and division', icon: '🧮' },
+        { id: 'factors', name: 'Factors & Multiples', description: 'Prime and composite numbers, factors, and multiples', icon: '🔄' },
+        { id: 'fractions', name: 'Fraction Operations', description: 'Add and subtract fractions with like denominators', icon: '➗' },
+        { id: 'angles', name: 'Angles', description: 'Measure and classify angles', icon: '📐' }
+      ];
+      break;
+    case '5':
+      topics = [
+        { id: 'decimals', name: 'Decimals', description: 'Operations with decimals to hundredths', icon: '💯' },
+        { id: 'fractions', name: 'Fraction Operations', description: 'Add, subtract, multiply fractions', icon: '➗' },
+        { id: 'volume', name: 'Volume', description: 'Measure volume of rectangular prisms', icon: '📦' },
+        { id: 'coordinates', name: 'Coordinate Plane', description: 'Plot points on the coordinate plane', icon: '📍' }
+      ];
+      break;
+    case '6':
+      topics = [
+        { id: 'ratios', name: 'Ratios & Proportions', description: 'Understand ratio concepts and use ratio reasoning', icon: '⚖️' },
+        { id: 'expressions', name: 'Expressions & Equations', description: 'Write, read, and evaluate expressions', icon: '🔣' },
+        { id: 'statistics', name: 'Statistics', description: 'Statistical variability and distributions', icon: '📊' },
+        { id: 'geometry', name: 'Geometry', description: 'Area, surface area, and volume', icon: '📐' }
+      ];
+      break;
+    case '7':
+      topics = [
+        { id: 'proportional', name: 'Proportional Relationships', description: 'Analyze and represent proportional relationships', icon: '📈' },
+        { id: 'rational', name: 'Rational Numbers', description: 'Operations with rational numbers', icon: '🔢' },
+        { id: 'probability', name: 'Probability', description: 'Develop understanding of probability', icon: '🎲' },
+        { id: 'scale', name: 'Scale Drawing', description: 'Draw geometric figures and describe relationships', icon: '✏️' }
+      ];
+      break;
+    case '8':
+      topics = [
+        { id: 'linear', name: 'Linear Equations', description: 'Analyze and solve linear equations', icon: '📈' },
+        { id: 'functions', name: 'Functions', description: 'Define, evaluate, and compare functions', icon: '🔄' },
+        { id: 'geometry', name: 'Geometry', description: 'Understand congruence and similarity', icon: '📐' },
+        { id: 'pythagorean', name: 'Pythagorean Theorem', description: 'Apply the Pythagorean Theorem', icon: '📏' }
       ];
       break;
   }
@@ -398,36 +394,253 @@ function gamesPage(path) {
     </nav>
     
     <main class="container">
-      <h2 style="margin: 30px 0 20px; text-align: center;">Games in ${topicTitle}</h2>
+      <div class="welcome-section fade-in" style="padding-top: 30px; padding-bottom: 10px;">
+        <h2>${gradeTitle} Topics</h2>
+        <p>Choose a topic to explore interactive math games designed for ${gradeTitle} students.</p>
+      </div>
+      
+      <div class="game-header fade-in" style="display: flex; justify-content: flex-start; margin: 10px 0 20px;">
+        <a href="#/" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+          <span style="margin-right: 5px;">&#8592;</span> Back to Grades
+        </a>
+      </div>
       
       <div class="grid">
-        ${games.map(game => `
-          <div class="card">
+        ${topics.map((topic, index) => `
+          <div class="card fade-in" style="animation-delay: ${0.1 * (index + 1)}s">
             <div class="card-header">
-              <h3>${game.name} ${!game.unlocked ? '🔒' : ''}</h3>
+              <h3>${topic.icon} ${topic.name}</h3>
             </div>
             <div class="card-body">
-              <p>${game.description}</p>
+              <p>${topic.description}</p>
             </div>
             <div class="card-footer">
-              <a href="${game.unlocked ? `#/game?id=${game.id}` : '#'}" 
-                 class="btn ${!game.unlocked ? 'btn-disabled' : ''}" 
-                 ${!game.unlocked ? 'disabled' : ''}>
-                Play Game
-              </a>
+              <a href="#/games?grade=${grade}&topic=${topic.id}" class="btn">View Games</a>
             </div>
           </div>
         `).join('')}
-      </div>
-      
-      <div style="text-align: center; margin: 30px 0;">
-        <a href="#/topics" class="btn">Back to Topics</a>
       </div>
     </main>
     
     <footer>
       <div class="container">
-        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank" style="color: white;">Support Us</a></p>
+        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank">Support Us</a></p>
+      </div>
+    </footer>
+  `;
+}
+
+// Games page
+function gamesPage(path) {
+  const params = new URLSearchParams(path.split('?')[1] || '');
+  const grade = params.get('grade') || '1';
+  const topic = params.get('topic') || 'addition';
+  
+  let gradeTitle = `${grade}st Grade`;
+  if (grade === '2') gradeTitle = '2nd Grade';
+  if (grade === '3') gradeTitle = '3rd Grade';
+  if (grade >= '4') gradeTitle = `${grade}th Grade`;
+  
+  let topicTitle = 'Addition';
+  let games = [];
+  
+  // Define games for each grade and topic combination
+  if (grade === '1') {
+    switch(topic) {
+      case 'counting':
+        topicTitle = 'Counting';
+        games = [
+          { id: 'number-line', name: 'Number Line', description: 'Place numbers in the correct order on a number line', unlocked: true },
+          { id: 'count-objects', name: 'Count Objects', description: 'Count the objects and select the correct number', unlocked: true }
+        ];
+        break;
+      case 'addition':
+        topicTitle = 'Addition';
+        games = [
+          { id: 'dungeon-escape', name: 'Dungeon Escape', description: 'Solve addition problems to escape the dungeon', unlocked: true },
+          { id: 'fruit-addition', name: 'Fruit Addition', description: 'Add fruits to practice basic addition', unlocked: false }
+        ];
+        break;
+      case 'subtraction':
+        topicTitle = 'Subtraction';
+        games = [
+          { id: 'space-blast', name: 'Space Blast', description: 'Subtract objects to clear space debris', unlocked: true }
+        ];
+        break;
+      case 'shapes':
+        topicTitle = 'Shapes';
+        games = [
+          { id: 'shape-builder', name: 'Shape Builder', description: 'Build shapes and match the outlines', unlocked: true }
+        ];
+        break;
+    }
+  } else if (grade === '2') {
+    switch(topic) {
+      case 'addition':
+        topicTitle = 'Addition';
+        games = [
+          { id: 'add-blocks', name: 'Add Blocks', description: 'Add two-digit numbers with blocks', unlocked: true }
+        ];
+        break;
+      case 'subtraction':
+        topicTitle = 'Subtraction';
+        games = [
+          { id: 'submarine', name: 'Submarine Math', description: 'Subtract to find the depth of your submarine', unlocked: true }
+        ];
+        break;
+      case 'money':
+        topicTitle = 'Money';
+        games = [
+          { id: 'coin-counter', name: 'Coin Counter', description: 'Count coins and make correct change', unlocked: true }
+        ];
+        break;
+      case 'time':
+        topicTitle = 'Time';
+        games = [
+          { id: 'clock-challenge', name: 'Clock Challenge', description: 'Set the clock to the correct time', unlocked: true }
+        ];
+        break;
+    }
+  } else if (grade === '3') {
+    switch(topic) {
+      case 'multiplication':
+        topicTitle = 'Multiplication';
+        games = [
+          { id: 'space-shooter', name: 'Space Shooter', description: 'Practice multiplication by shooting correct answers', unlocked: true },
+          { id: 'times-tables', name: 'Times Tables', description: 'Practice multiplication facts', unlocked: true }
+        ];
+        break;
+      case 'division':
+        topicTitle = 'Division';
+        games = [
+          { id: 'pizza-division', name: 'Pizza Division', description: 'Divide pizzas equally among friends', unlocked: true }
+        ];
+        break;
+      case 'fractions':
+        topicTitle = 'Fractions';
+        games = [
+          { id: 'fraction-bars', name: 'Fraction Bars', description: 'Match equivalent fractions', unlocked: true }
+        ];
+        break;
+      case 'area':
+        topicTitle = 'Area';
+        games = [
+          { id: 'area-builder', name: 'Area Builder', description: 'Build rectangles with specific areas', unlocked: true }
+        ];
+        break;
+    }
+  } else if (grade === '4') {
+    switch(topic) {
+      case 'multidigit':
+        topicTitle = 'Multi-digit Math';
+        games = [
+          { id: 'multiplication-grid', name: 'Multiplication Grid', description: 'Use the area model for multi-digit multiplication', unlocked: true }
+        ];
+        break;
+      case 'factors':
+        topicTitle = 'Factors & Multiples';
+        games = [
+          { id: 'factor-finder', name: 'Factor Finder', description: 'Find factors of numbers', unlocked: true }
+        ];
+        break;
+      case 'fractions':
+        topicTitle = 'Fraction Operations';
+        games = [
+          { id: 'fraction-add', name: 'Fraction Addition', description: 'Add fractions with like denominators', unlocked: true }
+        ];
+        break;
+      case 'angles':
+        topicTitle = 'Angles';
+        games = [
+          { id: 'angle-hunter', name: 'Angle Hunter', description: 'Find and measure angles', unlocked: true }
+        ];
+        break;
+    }
+  } else if (grade === '5') {
+    switch(topic) {
+      case 'decimals':
+        topicTitle = 'Decimals';
+        games = [
+          { id: 'decimal-dash', name: 'Decimal Dash', description: 'Order decimals on a number line', unlocked: true }
+        ];
+        break;
+      case 'fractions':
+        topicTitle = 'Fraction Operations';
+        games = [
+          { id: 'fraction-multiply', name: 'Fraction Multiplication', description: 'Multiply fractions', unlocked: true }
+        ];
+        break;
+      case 'volume':
+        topicTitle = 'Volume';
+        games = [
+          { id: 'volume-quest', name: 'Volume Quest', description: 'Calculate the volume of rectangular prisms', unlocked: true }
+        ];
+        break;
+      case 'coordinates':
+        topicTitle = 'Coordinate Plane';
+        games = [
+          { id: 'coordinate-quest', name: 'Coordinate Quest', description: 'Plot points on a coordinate plane', unlocked: true }
+        ];
+        break;
+    }
+  } else {
+    // For grades 6-8, show some default games
+    topicTitle = topic.charAt(0).toUpperCase() + topic.slice(1);
+    games = [
+      { id: 'pattern-puzzle', name: 'Pattern Puzzle', description: 'Complete the pattern by finding the missing piece', unlocked: true }
+    ];
+  }
+  
+  app.innerHTML = `
+    <header>
+      <div class="container">
+        <h1 class="logo">MathOrGame</h1>
+        <p class="tagline">Learn Math. Play Games.</p>
+      </div>
+    </header>
+    
+    <nav>
+      <a href="#/">Home</a>
+      <a href="#/topics">Topics</a>
+      <a href="#/about">About</a>
+    </nav>
+    
+    <main class="container">
+      <div class="welcome-section fade-in" style="padding-top: 30px; padding-bottom: 10px;">
+        <h2>${gradeTitle} - ${topicTitle}</h2>
+        <p>Select a game below to start practicing your ${topicTitle.toLowerCase()} skills!</p>
+      </div>
+      
+      <div class="game-header fade-in" style="display: flex; justify-content: flex-start; margin: 10px 0 20px;">
+        <a href="#/topics?grade=${grade}" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+          <span style="margin-right: 5px;">&#8592;</span> Back to Topics
+        </a>
+      </div>
+      
+      <div class="grid">
+        ${games.map((game, index) => `
+          <div class="card fade-in" style="animation-delay: ${0.1 * (index + 1)}s">
+            <div class="card-header">
+              <h3>${game.name} ${!game.unlocked ? '<span style="font-size: 0.8em; margin-left: 5px;">🔒</span>' : ''}</h3>
+            </div>
+            <div class="card-body">
+              <p>${game.description}</p>
+            </div>
+            <div class="card-footer">
+              <a href="${game.unlocked ? `#/game?id=${game.id}&grade=${grade}&topic=${topic}` : '#'}" 
+                 class="btn ${!game.unlocked ? 'btn-disabled' : ''}" 
+                 ${!game.unlocked ? 'disabled' : ''}>
+                ${game.unlocked ? 'Play Game' : 'Coming Soon'}
+              </a>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </main>
+    
+    <footer>
+      <div class="container">
+        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank">Support Us</a></p>
       </div>
     </footer>
   `;
@@ -462,6 +675,18 @@ function gamePage(path) {
       gameTitle = 'Pattern Puzzle';
       gameDescription = 'Complete the pattern by finding the missing piece!';
       break;
+    case 'space-shooter':
+      gameTitle = 'Space Shooter';
+      gameDescription = 'Practice multiplication by shooting correct answers!';
+      break;
+    case 'times-tables':
+      gameTitle = 'Times Tables';
+      gameDescription = 'Learn multiplication facts with an interactive times table!';
+      break;
+    case 'decimal-dash':
+      gameTitle = 'Decimal Dash';
+      gameDescription = 'Order decimals from smallest to largest on a number line!';
+      break;
   }
   
   app.innerHTML = `
@@ -479,28 +704,34 @@ function gamePage(path) {
     </nav>
     
     <main class="container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
-        <a href="javascript:history.back()" class="btn">Back</a>
-        <h2>${gameTitle}</h2>
-        <div>Score: <span id="score">0</span></div>
+      <div class="welcome-section fade-in" style="padding-top: 30px; padding-bottom: 10px;">
+        <h2 style="font-size: 2.4rem;">${gameTitle}</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 10px;">${gameDescription}</p>
       </div>
       
-      <p style="text-align: center; margin-bottom: 20px;">${gameDescription}</p>
+      <div class="game-header fade-in" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px;">
+        <a href="javascript:history.back()" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+          <span style="margin-right: 5px;">&#8592;</span> Back
+        </a>
+        <div class="score-display">Score: <span id="score">0</span></div>
+      </div>
       
-      <div class="game-container" style="height: 500px; min-height: 500px; background-color: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
+      <div class="game-container fade-in">
         <div id="game-canvas" style="width: 100%; height: 100%; position: relative;"></div>
       </div>
       
-      <div id="game-controls" style="text-align: center; margin: 20px 0; padding: 15px; background-color: #f9f9f9; border-radius: 8px;">
-        <div id="question-container" style="margin-bottom: 15px; font-size: 1.2rem; font-weight: bold;">Loading question...</div>
-        <input type="text" id="answer-input" placeholder="Your answer..." style="padding: 8px; margin-right: 10px; width: 150px; font-size: 1rem;">
-        <button id="submit-answer" class="btn btn-primary">Submit</button>
+      <div id="game-controls" class="fade-in">
+        <div id="question-container">Loading question...</div>
+        <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="answer-input" placeholder="Your answer..." autocomplete="off">
+          <button id="submit-answer" class="btn">Submit Answer</button>
+        </div>
       </div>
     </main>
     
     <footer>
       <div class="container">
-        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank" style="color: white;">Support Us</a></p>
+        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank">Support Us</a></p>
       </div>
     </footer>
   `;
@@ -514,7 +745,7 @@ function gamePage(path) {
     gameCanvas.style.width = '100%';
     gameCanvas.style.height = '100%';
     gameCanvas.style.minHeight = '500px';
-    gameCanvas.style.backgroundColor = '#f0f0f0';
+    gameCanvas.style.backgroundColor = '#f0f5ff';
   }
   
   console.log("Preparing to initialize game:", gameId);
@@ -549,30 +780,51 @@ function aboutPage() {
     </nav>
     
     <main class="container">
-      <h2 style="margin: 30px 0 20px; text-align: center;">About MathOrGame</h2>
+      <div class="welcome-section fade-in">
+        <h2>About MathOrGame</h2>
+        <p>Transforming math education through interactive 3D games</p>
+      </div>
       
-      <div style="max-width: 800px; margin: 0 auto; padding: 20px;">
-        <p>MathOrGame is an interactive 3D platform designed to make learning mathematics fun and engaging for students in grades 1-8.</p>
+      <div class="advanced-section fade-in" style="animation-delay: 0.2s">
+        <h3 style="font-size: 1.5rem; margin-bottom: 15px; color: var(--primary-color);">Our Mission</h3>
+        <p style="margin-bottom: 20px;">MathOrGame is an interactive 3D platform designed to make learning mathematics fun and engaging for students in grades 1-8. Our mission is to transform math education by combining rigorous curriculum standards with the engaging elements of game design.</p>
         
-        <h3 style="margin: 20px 0 10px;">Our Mission</h3>
-        <p>Our mission is to transform math education by combining rigorous curriculum standards with the engaging elements of game design.</p>
+        <h3 style="font-size: 1.5rem; margin: 25px 0 15px; color: var(--primary-color);">How It Works</h3>
+        <p style="margin-bottom: 20px;">Each game is carefully designed to teach specific math concepts through interactive 3D environments. As students play, they practice mathematical skills and develop problem-solving abilities in an engaging and stress-free environment.</p>
         
-        <h3 style="margin: 20px 0 10px;">How It Works</h3>
-        <p>Each game is carefully designed to teach specific math concepts through interactive 3D environments. As students play, they practice mathematical skills and develop problem-solving abilities.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin: 30px 0;">
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 15px; color: var(--gradient-start);">🎮</div>
+            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">Interactive Games</h4>
+            <p>Engaging 3D environments that make math concepts come alive</p>
+          </div>
+          
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 15px; color: var(--gradient-mid);">🧠</div>
+            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">Curriculum Aligned</h4>
+            <p>Games designed to match grade-specific educational standards</p>
+          </div>
+          
+          <div style="text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 15px; color: var(--gradient-end);">📊</div>
+            <h4 style="margin-bottom: 10px; font-size: 1.2rem;">Progress Tracking</h4>
+            <p>Track learning achievements and improvement over time</p>
+          </div>
+        </div>
         
-        <h3 style="margin: 20px 0 10px;">Contact Us</h3>
+        <h3 style="font-size: 1.5rem; margin: 25px 0 15px; color: var(--primary-color);">Contact Us</h3>
         <p>Have questions or feedback? We'd love to hear from you!</p>
-        <p>Email: <a href="mailto:contact@mathorgame.com">contact@mathorgame.com</a></p>
+        <p style="margin-top: 10px;">Email: <a href="mailto:contact@mathorgame.com" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">contact@mathorgame.com</a></p>
       </div>
       
       <div style="text-align: center; margin: 30px 0;">
-        <a href="#/" class="btn">Back to Home</a>
+        <a href="#/" class="btn fade-in" style="animation-delay: 0.4s">Back to Home</a>
       </div>
     </main>
     
     <footer>
       <div class="container">
-        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank" style="color: white;">Support Us</a></p>
+        <p>&copy; 2023 MathOrGame | <a href="https://ko-fi.com" target="_blank">Support Us</a></p>
       </div>
     </footer>
   `;
@@ -996,6 +1248,18 @@ function initGame(gameId) {
         console.log("Starting Pattern Puzzle game");
         setupPatternPuzzle(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
         break;
+      case 'space-shooter':
+        console.log("Starting Space Shooter game");
+        setupSpaceShooter(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        break;
+      case 'times-tables':
+        console.log("Starting Times Tables game");
+        setupTimesTables(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        break;
+      case 'decimal-dash':
+        console.log("Starting Decimal Dash game");
+        setupDecimalDash(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        break;
       default:
         console.error("Unknown game ID:", gameId);
         questionContainer.textContent = "Error: Game not found!";
@@ -1016,5 +1280,28 @@ function initGame(gameId) {
   }
 }
 
+// Setup Mobile Menu Toggle
+function setupMobileMenu() {
+  const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+  const nav = document.querySelector('nav');
+  
+  if (mobileMenuToggle) {
+    mobileMenuToggle.addEventListener('click', () => {
+      mobileMenuToggle.classList.toggle('active');
+      nav.classList.toggle('active');
+    });
+    
+    // Close menu when clicking on links
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenuToggle.classList.remove('active');
+        nav.classList.remove('active');
+      });
+    });
+  }
+}
+
 // Initialize the app
 init();
+
