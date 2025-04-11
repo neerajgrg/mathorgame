@@ -1,6 +1,7 @@
 import './style.css';
 import * as THREE from 'three';
 import * as TWEEN from '@tweenjs/tween.js';
+import gameCatalog from './data/gameCatalog.json';
 
 // Import the game setup functions
 import { setupDungeonEscape } from './games/DungeonEscape.js';
@@ -10,22 +11,28 @@ import { setupPatternPuzzle } from './games/PatternPuzzle.js';
 import { setupSpaceShooter } from './games/SpaceShooter.js';
 import { setupTimesTables } from './games/TimesTables.js';
 import { setupDecimalDash } from './games/DecimalDash.js';
+import { setupNumberLine } from './games/NumberLine.js';
+import { setupCountObjects } from './games/CountObjects.js';
+import { setupNumberAdventure } from './games/NumberAdventure.js';
 
 // DOM Elements
 const app = document.querySelector('#app');
 
-// Routes
+// Get the base URL for GitHub Pages compatibility (if deployed to GitHub Pages)
+const BASE_URL = '/mathorgame'; 
+
+// Routes - use simplified paths without leading slash for hash-based routing
 const routes = {
-  '/': homePage,
-  '/topics': topicsPage,
-  '/games': gamesPage,
-  '/game': gamePage,
-  '/about': aboutPage,
+  '': homePage,
+  'topics': topicsPage,
+  'games': gamesPage,
+  'game': gamePage,
+  'about': aboutPage,
 };
 
 // Route handler
 function handleRoute() {
-  const path = window.location.hash.replace('#', '') || '/';
+  const path = window.location.hash.replace('#', '') || '';
   console.log('Path before routing:', path);
   
   // Extract the base path without query parameters
@@ -33,7 +40,7 @@ function handleRoute() {
   console.log('Base path:', basePath);
   
   // Simple direct route matching
-  let route = '/';
+  let route = '';
   
   // Check for direct route match first
   if (routes.hasOwnProperty(basePath)) {
@@ -62,6 +69,12 @@ function init() {
   
   // Setup PWA installation
   setupPWA();
+  
+  // Mobile viewport height fix (100vh issue on mobile browsers)
+  setupMobileViewportFix();
+  
+  // Handle device orientation changes
+  window.addEventListener('orientationchange', handleOrientationChange);
 }
 
 // Setup PWA installation functionality
@@ -169,9 +182,9 @@ function homePage() {
     </header>
     
     <nav>
-      <a href="#/">Home</a>
-      <a href="#/topics">Topics</a>
-      <a href="#/about">About</a>
+      <a href="#">Home</a>
+      <a href="#topics">Topics</a>
+      <a href="#about">About</a>
     </nav>
     
     <main class="container">
@@ -193,7 +206,7 @@ function homePage() {
             <p>Basic addition, subtraction, shapes, and patterns</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=1" class="btn">View Topics</a>
+            <a href="#topics?grade=1" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -205,7 +218,7 @@ function homePage() {
             <p>Addition, subtraction, basic geometry, and measurement</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=2" class="btn">View Topics</a>
+            <a href="#topics?grade=2" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -217,7 +230,7 @@ function homePage() {
             <p>Multiplication, division, fractions, and area</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=3" class="btn">View Topics</a>
+            <a href="#topics?grade=3" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -229,7 +242,7 @@ function homePage() {
             <p>Multi-digit arithmetic, factors, and geometry</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=4" class="btn">View Topics</a>
+            <a href="#topics?grade=4" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -241,7 +254,7 @@ function homePage() {
             <p>Decimals, fractions, and volume</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=5" class="btn">View Topics</a>
+            <a href="#topics?grade=5" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -253,7 +266,7 @@ function homePage() {
             <p>Ratios, equations, and statistical distributions</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=6" class="btn">View Topics</a>
+            <a href="#topics?grade=6" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -265,7 +278,7 @@ function homePage() {
             <p>Proportional relationships, expressions, and probability</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=7" class="btn">View Topics</a>
+            <a href="#topics?grade=7" class="btn">View Topics</a>
           </div>
         </div>
         
@@ -277,7 +290,7 @@ function homePage() {
             <p>Linear equations, functions, and geometric transformations</p>
           </div>
           <div class="card-footer">
-            <a href="#/topics?grade=8" class="btn">View Topics</a>
+            <a href="#topics?grade=8" class="btn">View Topics</a>
           </div>
         </div>
       </div>
@@ -304,80 +317,20 @@ function topicsPage(path) {
   const params = new URLSearchParams(path.split('?')[1] || '');
   const grade = params.get('grade') || '1';
   
-  let gradeTitle = `${grade}st Grade`;
-  if (grade === '2') gradeTitle = '2nd Grade';
-  if (grade === '3') gradeTitle = '3rd Grade';
-  if (grade >= '4') gradeTitle = `${grade}th Grade`;
+  // Get grade data from catalog
+  const gradeData = gameCatalog.grades[grade] || {
+    title: `${grade}th Grade`,
+    topics: {}
+  };
   
-  let topics = [];
-  
-  // Define topics for each grade
-  switch(grade) {
-    case '1':
-      topics = [
-        { id: 'counting', name: 'Counting', description: 'Count objects and learn number sequences', icon: '🔢' },
-        { id: 'addition', name: 'Addition', description: 'Basic addition with numbers 1-20', icon: '➕' },
-        { id: 'subtraction', name: 'Subtraction', description: 'Basic subtraction with numbers 1-20', icon: '➖' },
-        { id: 'shapes', name: 'Shapes', description: 'Identify and classify basic 2D shapes', icon: '◯' }
-      ];
-      break;
-    case '2':
-      topics = [
-        { id: 'addition', name: 'Addition', description: 'Addition with numbers up to 100', icon: '➕' },
-        { id: 'subtraction', name: 'Subtraction', description: 'Subtraction with numbers up to 100', icon: '➖' },
-        { id: 'money', name: 'Money', description: 'Counting money and making change', icon: '💰' },
-        { id: 'time', name: 'Time', description: 'Telling time to the nearest 5 minutes', icon: '🕒' }
-      ];
-      break;
-    case '3':
-      topics = [
-        { id: 'multiplication', name: 'Multiplication', description: 'Multiplication facts and properties', icon: '✖️' },
-        { id: 'division', name: 'Division', description: 'Basic division concepts and facts', icon: '➗' },
-        { id: 'fractions', name: 'Fractions', description: 'Introduction to fractions and equivalent fractions', icon: '🔢' },
-        { id: 'area', name: 'Area', description: 'Calculate area of rectangles and squares', icon: '📏' }
-      ];
-      break;
-    case '4':
-      topics = [
-        { id: 'multidigit', name: 'Multi-digit Math', description: 'Multi-digit multiplication and division', icon: '🧮' },
-        { id: 'factors', name: 'Factors & Multiples', description: 'Prime and composite numbers, factors, and multiples', icon: '🔄' },
-        { id: 'fractions', name: 'Fraction Operations', description: 'Add and subtract fractions with like denominators', icon: '➗' },
-        { id: 'angles', name: 'Angles', description: 'Measure and classify angles', icon: '📐' }
-      ];
-      break;
-    case '5':
-      topics = [
-        { id: 'decimals', name: 'Decimals', description: 'Operations with decimals to hundredths', icon: '💯' },
-        { id: 'fractions', name: 'Fraction Operations', description: 'Add, subtract, multiply fractions', icon: '➗' },
-        { id: 'volume', name: 'Volume', description: 'Measure volume of rectangular prisms', icon: '📦' },
-        { id: 'coordinates', name: 'Coordinate Plane', description: 'Plot points on the coordinate plane', icon: '📍' }
-      ];
-      break;
-    case '6':
-      topics = [
-        { id: 'ratios', name: 'Ratios & Proportions', description: 'Understand ratio concepts and use ratio reasoning', icon: '⚖️' },
-        { id: 'expressions', name: 'Expressions & Equations', description: 'Write, read, and evaluate expressions', icon: '🔣' },
-        { id: 'statistics', name: 'Statistics', description: 'Statistical variability and distributions', icon: '📊' },
-        { id: 'geometry', name: 'Geometry', description: 'Area, surface area, and volume', icon: '📐' }
-      ];
-      break;
-    case '7':
-      topics = [
-        { id: 'proportional', name: 'Proportional Relationships', description: 'Analyze and represent proportional relationships', icon: '📈' },
-        { id: 'rational', name: 'Rational Numbers', description: 'Operations with rational numbers', icon: '🔢' },
-        { id: 'probability', name: 'Probability', description: 'Develop understanding of probability', icon: '🎲' },
-        { id: 'scale', name: 'Scale Drawing', description: 'Draw geometric figures and describe relationships', icon: '✏️' }
-      ];
-      break;
-    case '8':
-      topics = [
-        { id: 'linear', name: 'Linear Equations', description: 'Analyze and solve linear equations', icon: '📈' },
-        { id: 'functions', name: 'Functions', description: 'Define, evaluate, and compare functions', icon: '🔄' },
-        { id: 'geometry', name: 'Geometry', description: 'Understand congruence and similarity', icon: '📐' },
-        { id: 'pythagorean', name: 'Pythagorean Theorem', description: 'Apply the Pythagorean Theorem', icon: '📏' }
-      ];
-      break;
-  }
+  const topics = Object.entries(gradeData.topics).map(([id, topic]) => {
+    return {
+      id: id,
+      name: topic.title,
+      description: topic.description,
+      icon: topic.icon
+    };
+  });
   
   app.innerHTML = `
     <header>
@@ -388,19 +341,19 @@ function topicsPage(path) {
     </header>
     
     <nav>
-      <a href="#/">Home</a>
-      <a href="#/topics">Topics</a>
-      <a href="#/about">About</a>
+      <a href="#">Home</a>
+      <a href="#topics">Topics</a>
+      <a href="#about">About</a>
     </nav>
     
     <main class="container">
       <div class="welcome-section fade-in" style="padding-top: 30px; padding-bottom: 10px;">
-        <h2>${gradeTitle} Topics</h2>
-        <p>Choose a topic to explore interactive math games designed for ${gradeTitle} students.</p>
+        <h2>${gradeData.title} Topics</h2>
+        <p>Choose a topic to explore interactive math games designed for ${gradeData.title} students.</p>
       </div>
       
       <div class="game-header fade-in" style="display: flex; justify-content: flex-start; margin: 10px 0 20px;">
-        <a href="#/" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+        <a href="#" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
           <span style="margin-right: 5px;">&#8592;</span> Back to Grades
         </a>
       </div>
@@ -415,7 +368,7 @@ function topicsPage(path) {
               <p>${topic.description}</p>
             </div>
             <div class="card-footer">
-              <a href="#/games?grade=${grade}&topic=${topic.id}" class="btn">View Games</a>
+              <a href="#games?grade=${grade}&topic=${topic.id}" class="btn">View Games</a>
             </div>
           </div>
         `).join('')}
@@ -432,164 +385,25 @@ function topicsPage(path) {
 
 // Games page
 function gamesPage(path) {
+  console.log("GAMES PAGE HANDLER CALLED with path:", path);
+  
   const params = new URLSearchParams(path.split('?')[1] || '');
   const grade = params.get('grade') || '1';
-  const topic = params.get('topic') || 'addition';
+  const topicId = params.get('topic') || 'addition';
   
-  let gradeTitle = `${grade}st Grade`;
-  if (grade === '2') gradeTitle = '2nd Grade';
-  if (grade === '3') gradeTitle = '3rd Grade';
-  if (grade >= '4') gradeTitle = `${grade}th Grade`;
+  // Get data from catalog
+  const gradeData = gameCatalog.grades[grade] || {
+    title: `${grade}th Grade`,
+    topics: {}
+  };
   
-  let topicTitle = 'Addition';
-  let games = [];
+  const topicData = gradeData.topics[topicId] || {
+    title: 'Topic',
+    description: 'Topic description',
+    games: []
+  };
   
-  // Define games for each grade and topic combination
-  if (grade === '1') {
-    switch(topic) {
-      case 'counting':
-        topicTitle = 'Counting';
-        games = [
-          { id: 'number-line', name: 'Number Line', description: 'Place numbers in the correct order on a number line', unlocked: true },
-          { id: 'count-objects', name: 'Count Objects', description: 'Count the objects and select the correct number', unlocked: true }
-        ];
-        break;
-      case 'addition':
-        topicTitle = 'Addition';
-        games = [
-          { id: 'dungeon-escape', name: 'Dungeon Escape', description: 'Solve addition problems to escape the dungeon', unlocked: true },
-          { id: 'fruit-addition', name: 'Fruit Addition', description: 'Add fruits to practice basic addition', unlocked: false }
-        ];
-        break;
-      case 'subtraction':
-        topicTitle = 'Subtraction';
-        games = [
-          { id: 'space-blast', name: 'Space Blast', description: 'Subtract objects to clear space debris', unlocked: true }
-        ];
-        break;
-      case 'shapes':
-        topicTitle = 'Shapes';
-        games = [
-          { id: 'shape-builder', name: 'Shape Builder', description: 'Build shapes and match the outlines', unlocked: true }
-        ];
-        break;
-    }
-  } else if (grade === '2') {
-    switch(topic) {
-      case 'addition':
-        topicTitle = 'Addition';
-        games = [
-          { id: 'add-blocks', name: 'Add Blocks', description: 'Add two-digit numbers with blocks', unlocked: true }
-        ];
-        break;
-      case 'subtraction':
-        topicTitle = 'Subtraction';
-        games = [
-          { id: 'submarine', name: 'Submarine Math', description: 'Subtract to find the depth of your submarine', unlocked: true }
-        ];
-        break;
-      case 'money':
-        topicTitle = 'Money';
-        games = [
-          { id: 'coin-counter', name: 'Coin Counter', description: 'Count coins and make correct change', unlocked: true }
-        ];
-        break;
-      case 'time':
-        topicTitle = 'Time';
-        games = [
-          { id: 'clock-challenge', name: 'Clock Challenge', description: 'Set the clock to the correct time', unlocked: true }
-        ];
-        break;
-    }
-  } else if (grade === '3') {
-    switch(topic) {
-      case 'multiplication':
-        topicTitle = 'Multiplication';
-        games = [
-          { id: 'space-shooter', name: 'Space Shooter', description: 'Practice multiplication by shooting correct answers', unlocked: true },
-          { id: 'times-tables', name: 'Times Tables', description: 'Practice multiplication facts', unlocked: true }
-        ];
-        break;
-      case 'division':
-        topicTitle = 'Division';
-        games = [
-          { id: 'pizza-division', name: 'Pizza Division', description: 'Divide pizzas equally among friends', unlocked: true }
-        ];
-        break;
-      case 'fractions':
-        topicTitle = 'Fractions';
-        games = [
-          { id: 'fraction-bars', name: 'Fraction Bars', description: 'Match equivalent fractions', unlocked: true }
-        ];
-        break;
-      case 'area':
-        topicTitle = 'Area';
-        games = [
-          { id: 'area-builder', name: 'Area Builder', description: 'Build rectangles with specific areas', unlocked: true }
-        ];
-        break;
-    }
-  } else if (grade === '4') {
-    switch(topic) {
-      case 'multidigit':
-        topicTitle = 'Multi-digit Math';
-        games = [
-          { id: 'multiplication-grid', name: 'Multiplication Grid', description: 'Use the area model for multi-digit multiplication', unlocked: true }
-        ];
-        break;
-      case 'factors':
-        topicTitle = 'Factors & Multiples';
-        games = [
-          { id: 'factor-finder', name: 'Factor Finder', description: 'Find factors of numbers', unlocked: true }
-        ];
-        break;
-      case 'fractions':
-        topicTitle = 'Fraction Operations';
-        games = [
-          { id: 'fraction-add', name: 'Fraction Addition', description: 'Add fractions with like denominators', unlocked: true }
-        ];
-        break;
-      case 'angles':
-        topicTitle = 'Angles';
-        games = [
-          { id: 'angle-hunter', name: 'Angle Hunter', description: 'Find and measure angles', unlocked: true }
-        ];
-        break;
-    }
-  } else if (grade === '5') {
-    switch(topic) {
-      case 'decimals':
-        topicTitle = 'Decimals';
-        games = [
-          { id: 'decimal-dash', name: 'Decimal Dash', description: 'Order decimals on a number line', unlocked: true }
-        ];
-        break;
-      case 'fractions':
-        topicTitle = 'Fraction Operations';
-        games = [
-          { id: 'fraction-multiply', name: 'Fraction Multiplication', description: 'Multiply fractions', unlocked: true }
-        ];
-        break;
-      case 'volume':
-        topicTitle = 'Volume';
-        games = [
-          { id: 'volume-quest', name: 'Volume Quest', description: 'Calculate the volume of rectangular prisms', unlocked: true }
-        ];
-        break;
-      case 'coordinates':
-        topicTitle = 'Coordinate Plane';
-        games = [
-          { id: 'coordinate-quest', name: 'Coordinate Quest', description: 'Plot points on a coordinate plane', unlocked: true }
-        ];
-        break;
-    }
-  } else {
-    // For grades 6-8, show some default games
-    topicTitle = topic.charAt(0).toUpperCase() + topic.slice(1);
-    games = [
-      { id: 'pattern-puzzle', name: 'Pattern Puzzle', description: 'Complete the pattern by finding the missing piece', unlocked: true }
-    ];
-  }
+  const games = topicData.games || [];
   
   app.innerHTML = `
     <header>
@@ -600,19 +414,19 @@ function gamesPage(path) {
     </header>
     
     <nav>
-      <a href="#/">Home</a>
-      <a href="#/topics">Topics</a>
-      <a href="#/about">About</a>
+      <a href="#">Home</a>
+      <a href="#topics">Topics</a>
+      <a href="#about">About</a>
     </nav>
     
     <main class="container">
       <div class="welcome-section fade-in" style="padding-top: 30px; padding-bottom: 10px;">
-        <h2>${gradeTitle} - ${topicTitle}</h2>
-        <p>Select a game below to start practicing your ${topicTitle.toLowerCase()} skills!</p>
+        <h2>${gradeData.title} - ${topicData.title}</h2>
+        <p>Select a game below to start practicing your ${topicData.title.toLowerCase()} skills!</p>
       </div>
       
       <div class="game-header fade-in" style="display: flex; justify-content: flex-start; margin: 10px 0 20px;">
-        <a href="#/topics?grade=${grade}" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+        <a href="#topics?grade=${grade}" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
           <span style="margin-right: 5px;">&#8592;</span> Back to Topics
         </a>
       </div>
@@ -627,7 +441,7 @@ function gamesPage(path) {
               <p>${game.description}</p>
             </div>
             <div class="card-footer">
-              <a href="${game.unlocked ? `#/game?id=${game.id}&grade=${grade}&topic=${topic}` : '#'}" 
+              <a href="${game.unlocked ? `#game?id=${game.id}&grade=${grade}&topic=${topicId}` : '#'}" 
                  class="btn ${!game.unlocked ? 'btn-disabled' : ''}" 
                  ${!game.unlocked ? 'disabled' : ''}>
                 ${game.unlocked ? 'Play Game' : 'Coming Soon'}
@@ -652,41 +466,23 @@ function gamePage(path) {
   
   const params = new URLSearchParams(path.split('?')[1] || '');
   const gameId = params.get('id') || 'dungeon-escape';
+  const grade = params.get('grade') || '1';
+  const topic = params.get('topic') || 'addition';
   
   console.log("Game page loaded for game ID:", gameId);
   
-  let gameTitle = 'Dungeon Escape';
-  let gameDescription = 'Solve equations to open doors and escape the dungeon!';
+  // Get game info from the catalog
+  let gameInfo = gameCatalog.gameInfo[gameId] || {
+    title: 'Game',
+    description: 'Game description'
+  };
   
-  switch(gameId) {
-    case 'dungeon-escape':
-      gameTitle = 'Dungeon Escape';
-      gameDescription = 'Solve equations to open doors and escape the dungeon!';
-      break;
-    case 'shape-builder':
-      gameTitle = 'Shape Builder';
-      gameDescription = 'Build shapes and match the outlines to learn geometry!';
-      break;
-    case 'volume-quest':
-      gameTitle = 'Volume Quest';
-      gameDescription = 'Calculate the volume of 3D objects to progress!';
-      break;
-    case 'pattern-puzzle':
-      gameTitle = 'Pattern Puzzle';
-      gameDescription = 'Complete the pattern by finding the missing piece!';
-      break;
-    case 'space-shooter':
-      gameTitle = 'Space Shooter';
-      gameDescription = 'Practice multiplication by shooting correct answers!';
-      break;
-    case 'times-tables':
-      gameTitle = 'Times Tables';
-      gameDescription = 'Learn multiplication facts with an interactive times table!';
-      break;
-    case 'decimal-dash':
-      gameTitle = 'Decimal Dash';
-      gameDescription = 'Order decimals from smallest to largest on a number line!';
-      break;
+  // Special case for NumberAdventure when using dungeon-escape ID in counting topic
+  if (gameId === 'dungeon-escape' && topic === 'counting') {
+    gameInfo = gameCatalog.gameInfo['number-adventure'] || {
+      title: 'Number Adventure',
+      description: 'Embark on a magical journey, counting treasures to open castle doors!'
+    };
   }
   
   app.innerHTML = `
@@ -698,19 +494,19 @@ function gamePage(path) {
     </header>
     
     <nav>
-      <a href="#/">Home</a>
-      <a href="#/topics">Topics</a>
-      <a href="#/about">About</a>
+      <a href="#">Home</a>
+      <a href="#topics">Topics</a>
+      <a href="#about">About</a>
     </nav>
     
     <main class="container">
       <div class="welcome-section fade-in" style="padding-top: 30px; padding-bottom: 10px;">
-        <h2 style="font-size: 2.4rem;">${gameTitle}</h2>
-        <p style="font-size: 1.1rem; margin-bottom: 10px;">${gameDescription}</p>
+        <h2 style="font-size: 2.4rem;">${gameInfo.title}</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 10px;">${gameInfo.description}</p>
       </div>
       
       <div class="game-header fade-in" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px;">
-        <a href="javascript:history.back()" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
+        <a href="#games?grade=${grade}&topic=${topic}" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
           <span style="margin-right: 5px;">&#8592;</span> Back
         </a>
         <div class="score-display">Score: <span id="score">0</span></div>
@@ -774,9 +570,9 @@ function aboutPage() {
     </header>
     
     <nav>
-      <a href="#/">Home</a>
-      <a href="#/topics">Topics</a>
-      <a href="#/about">About</a>
+      <a href="#">Home</a>
+      <a href="#topics">Topics</a>
+      <a href="#about">About</a>
     </nav>
     
     <main class="container">
@@ -818,7 +614,7 @@ function aboutPage() {
       </div>
       
       <div style="text-align: center; margin: 30px 0;">
-        <a href="#/" class="btn fade-in" style="animation-delay: 0.4s">Back to Home</a>
+        <a href="#" class="btn fade-in" style="animation-delay: 0.4s">Back to Home</a>
       </div>
     </main>
     
@@ -834,120 +630,90 @@ function aboutPage() {
 function initHomeAnimation() {
   const container = document.getElementById('three-container');
   
-  if (!container) {
-    console.error('Could not find three-container element');
-    return;
-  }
+  if (!container) return;
   
-  console.log('Initializing home animation, container dimensions:', container.clientWidth, container.clientHeight);
-  
-  // Ensure container has minimum dimensions
-  container.style.width = '100%';
-  container.style.height = '400px';
-  container.style.backgroundColor = '#f0f0f0';
-  container.style.border = '1px solid #ddd';
-  container.style.borderRadius = '8px';
-  container.style.overflow = 'hidden';
-  
-  // Clear any existing content
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
-  
-  // Create a scene
+  // Scene setup
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xf5f5f5);
+  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+  camera.position.z = 10;
   
-  // Create a camera with fallback aspect ratio if dimensions are zero
-  const camera = new THREE.PerspectiveCamera(
-    75, 
-    (container.clientWidth && container.clientHeight) ? container.clientWidth / container.clientHeight : 2,
-    0.1, 
-    1000
-  );
-  camera.position.z = 7;
-  
-  // Create a renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  
-  // Set default size, will be adjusted after DOM is fully loaded
-  renderer.setSize(
-    container.clientWidth || 800, 
-    container.clientHeight || 400
-  );
-  
-  // Add the renderer to the DOM
+  // Renderer setup
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
   
-  console.log("Renderer created with size:", 
-    renderer.domElement.width, 
-    renderer.domElement.height
-  );
-  
-  // Add ambient light
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-  scene.add(ambientLight);
-  
-  // Add directional light
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  directionalLight.position.set(1, 1, 1);
-  scene.add(directionalLight);
-  
-  // Create math-themed objects
-  const objects = [];
-  
-  // 1. Number cubes
-  const numbers = [1, 2, 3, 4, 5];
-  numbers.forEach((num, index) => {
-    const geometry = new THREE.BoxGeometry(0.8, 0.8, 0.8);
-    const material = new THREE.MeshPhongMaterial({ 
-      color: new THREE.Color(`hsl(${index * 30}, 100%, 60%)`),
-      shininess: 100
-    });
-    
-    const cube = new THREE.Mesh(geometry, material);
-    cube.position.x = -4 + (index * 2);
-    cube.position.y = 1.5;
-    cube.userData = { rotationSpeed: 0.01 + (index * 0.003) };
-    
-    scene.add(cube);
-    objects.push(cube);
-  });
-  
-  // 2. Geometric shapes
-  const shapeTypes = [
-    { geometry: new THREE.TetrahedronGeometry(0.8), position: new THREE.Vector3(-3, -1.5, 0) },
-    { geometry: new THREE.OctahedronGeometry(0.8), position: new THREE.Vector3(-1.5, -1.5, 0) },
-    { geometry: new THREE.DodecahedronGeometry(0.8), position: new THREE.Vector3(0, -1.5, 0) },
-    { geometry: new THREE.TorusGeometry(0.6, 0.3, 16, 32), position: new THREE.Vector3(1.5, -1.5, 0) },
-    { geometry: new THREE.ConeGeometry(0.7, 1.4, 32), position: new THREE.Vector3(3, -1.5, 0) }
-  ];
-  
-  shapeTypes.forEach((shape, index) => {
-    const material = new THREE.MeshPhongMaterial({ 
-      color: new THREE.Color(`hsl(${200 + index * 30}, 100%, 60%)`),
-      shininess: 100
-    });
-    
-    const mesh = new THREE.Mesh(shape.geometry, material);
-    mesh.position.copy(shape.position);
-    mesh.userData = { rotationSpeed: 0.01 + (index * 0.002) };
-    
-    scene.add(mesh);
-    objects.push(mesh);
-  });
-  
-  // Add event listeners for interaction
+  // Create a raycaster for interaction
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   
+  // Array to store all interactive objects
+  const objects = [];
+
+  // Add lights to improve visibility without harshness
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+  
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(5, 5, 5);
+  scene.add(directionalLight);
+  
+  // Create only 5 objects of different shapes and colors (reduced from original count)
+  // Limited to 5 geometric objects with soft colors
+  const shapes = [
+    new THREE.BoxGeometry(1.5, 1.5, 1.5),
+    new THREE.SphereGeometry(1, 32, 32),
+    new THREE.ConeGeometry(1, 2, 32),
+    new THREE.TetrahedronGeometry(1.2),
+    new THREE.TorusGeometry(1, 0.4, 16, 32)
+  ];
+  
+  // Muted, child-friendly color palette
+  const colors = [
+    0x6a98c2, // soft blue
+    0x7ac285, // soft green
+    0xd6a87c, // soft orange
+    0xb683b3, // soft purple
+    0xd6937c  // soft coral
+  ];
+  
+  for (let i = 0; i < 5; i++) {
+    const geometry = shapes[i];
+    
+    // Create material with soft colors and no shininess
+    const material = new THREE.MeshStandardMaterial({
+      color: colors[i],
+      roughness: 0.8,
+      metalness: 0.2
+    });
+    
+    const object = new THREE.Mesh(geometry, material);
+    
+    // Position in a balanced circular arrangement
+    const angle = (i / 5) * Math.PI * 2;
+    const radius = 3.5;
+    object.position.x = Math.cos(angle) * radius;
+    object.position.y = Math.sin(angle) * radius;
+    object.position.z = 0;
+    
+    // Slow, gentle rotation
+    object.userData = {
+      rotationSpeed: 0.005 + Math.random() * 0.005 // Reduced rotation speed
+    };
+    
+    objects.push(object);
+    scene.add(object);
+  }
+  
+  // Track mouse movement for interaction
   container.addEventListener('mousemove', (event) => {
     // Calculate mouse position in normalized device coordinates
-    const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    const rect = container.getBoundingClientRect();
+    mouse.x = ((event.clientX - rect.left) / container.clientWidth) * 2 - 1;
+    mouse.y = -((event.clientY - rect.top) / container.clientHeight) * 2 + 1;
   });
   
+  // Interaction on click - simplified animation
   container.addEventListener('click', () => {
     // Check for intersections
     raycaster.setFromCamera(mouse, camera);
@@ -956,9 +722,9 @@ function initHomeAnimation() {
     if (intersects.length > 0) {
       const object = intersects[0].object;
       
-      // Create a bounce animation
+      // Create a simpler bounce animation 
       new TWEEN.Tween(object.position)
-        .to({ y: object.position.y + 1 }, 200)
+        .to({ y: object.position.y + 0.5 }, 200) // Reduced height
         .easing(TWEEN.Easing.Quadratic.Out)
         .chain(
           new TWEEN.Tween(object.position)
@@ -967,184 +733,156 @@ function initHomeAnimation() {
         )
         .start();
       
-      // Change color
-      const color = new THREE.Color(`hsl(${Math.random() * 360}, 100%, 70%)`);
-      object.material.color = color;
+      // Gentler color change - uses the same palette
+      const colorIndex = Math.floor(Math.random() * colors.length);
+      object.material.color.set(colors[colorIndex]);
     }
   });
   
-  // Animation
+  // Animation - simplified
   function animate() {
     requestAnimationFrame(animate);
     
-    // Rotate objects
+    // Rotate objects gently
     objects.forEach(obj => {
-      obj.rotation.x += obj.userData.rotationSpeed;
-      obj.rotation.y += obj.userData.rotationSpeed * 1.3;
+      obj.rotation.x += obj.userData.rotationSpeed / 2;
+      obj.rotation.y += obj.userData.rotationSpeed * 0.7;
     });
     
-    // Detect intersections for hover effect
+    // Simplified hover effect with reduced intensity
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(objects);
     
     objects.forEach(obj => {
-      // Reset scale for all objects
+      // Reset scale for all objects with gentler transition
       if (obj.scale.x > 1) {
-        obj.scale.lerp(new THREE.Vector3(1, 1, 1), 0.1);
+        obj.scale.lerp(new THREE.Vector3(1, 1, 1), 0.05); // Slower transition
       }
     });
     
-    // Scale up hovered object
+    // Minimal scale up for hover effect
     if (intersects.length > 0) {
       const hoveredObject = intersects[0].object;
-      hoveredObject.scale.lerp(new THREE.Vector3(1.2, 1.2, 1.2), 0.1);
+      hoveredObject.scale.lerp(new THREE.Vector3(1.1, 1.1, 1.1), 0.05); // Reduced hover effect
     }
     
     TWEEN.update();
-    
     renderer.render(scene, camera);
   }
   
-  // Resize handler to ensure proper rendering dimensions
+  // Handle window resize
   function handleResize() {
-    if (container.clientWidth > 0 && container.clientHeight > 0) {
-      console.log("Resizing home animation:", container.clientWidth, container.clientHeight);
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
-    }
+    camera.aspect = container.clientWidth / container.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(container.clientWidth, container.clientHeight);
   }
   
-  // Handle window resize
   window.addEventListener('resize', handleResize);
   
-  // Force a resize after a delay to ensure DOM layout is complete
-  setTimeout(handleResize, 100);
-  
-  // Start animation loop
   animate();
 }
 
 // Initialize 3D background
 function init3DBackground() {
-  const container = document.getElementById('bg-canvas');
+  const bgCanvas = document.getElementById('bg-canvas');
   
-  if (!container) {
-    console.error('Could not find bg-canvas element');
+  if (!bgCanvas) {
+    console.warn('Background canvas element not found');
     return;
   }
   
-  // Create a scene
+  // Scene setup
   const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+  camera.position.z = 10;
   
-  // Create a camera
-  const camera = new THREE.PerspectiveCamera(
-    75, 
-    window.innerWidth / window.innerHeight,
-    0.1, 
-    1000
-  );
-  camera.position.z = 20;
-  
-  // Create a renderer with alpha
-  const renderer = new THREE.WebGLRenderer({ 
-    alpha: true,
-    antialias: true 
-  });
+  // Renderer setup
+  const renderer = new THREE.WebGLRenderer({ canvas: bgCanvas, alpha: true, antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   
-  // Add the renderer to the DOM
-  container.appendChild(renderer.domElement);
+  // Reduced number of particles
+  const particleCount = 50; // Reduced from higher number
+  const particles = new THREE.Group();
   
-  // Create background objects
-  const objects = [];
+  const geometry = new THREE.SphereGeometry(0.1, 8, 8); // Simplified geometry
   
-  // Create random math symbols
-  const symbols = ['+', '-', '×', '÷', '=', '∑', '∫', 'π', '√', '∞'];
-  const symbolGeometries = [
-    new THREE.BoxGeometry(0.5, 0.5, 0.5),
-    new THREE.SphereGeometry(0.3, 32, 32),
-    new THREE.TetrahedronGeometry(0.4),
-    new THREE.OctahedronGeometry(0.4),
-    new THREE.IcosahedronGeometry(0.4)
-  ];
-  
-  // Create 50 random shapes
-  for (let i = 0; i < 50; i++) {
-    // Choose a random geometry
-    const geometry = symbolGeometries[Math.floor(Math.random() * symbolGeometries.length)];
-    
-    // Create a material with a random color
-    const material = new THREE.MeshPhongMaterial({
-      color: new THREE.Color(`hsl(${Math.random() * 360}, 50%, 70%)`),
+  // Create particles with muted colors
+  for (let i = 0; i < particleCount; i++) {
+    // Using a more muted color palette
+    const material = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(`hsl(${Math.floor(Math.random() * 60) + 180}, 40%, 70%)`), // More blues and greens, less saturation
       transparent: true,
-      opacity: 0.7,
-      shininess: 100
+      opacity: 0.5 // More transparent
     });
     
-    const object = new THREE.Mesh(geometry, material);
+    const particle = new THREE.Mesh(geometry, material);
     
-    // Position randomly in 3D space
-    object.position.x = Math.random() * 80 - 40;
-    object.position.y = Math.random() * 80 - 40;
-    object.position.z = Math.random() * 30 - 35;
+    // Position particles more intentionally around the edges
+    const distance = 8 + Math.random() * 10;
+    const theta = THREE.MathUtils.randFloatSpread(360); 
+    const phi = THREE.MathUtils.randFloatSpread(180);
     
-    // Set random rotation
-    object.rotation.x = Math.random() * Math.PI;
-    object.rotation.y = Math.random() * Math.PI;
+    particle.position.x = distance * Math.sin(theta) * Math.cos(phi);
+    particle.position.y = distance * Math.sin(theta) * Math.sin(phi);
+    particle.position.z = distance * Math.cos(theta);
     
-    // Set random animation parameters
-    object.userData = {
-      rotationSpeed: {
-        x: (Math.random() - 0.5) * 0.01,
-        y: (Math.random() - 0.5) * 0.01,
-        z: (Math.random() - 0.5) * 0.01
+    // Slower rotation
+    particle.rotation.x = Math.random() * Math.PI;
+    particle.rotation.y = Math.random() * Math.PI;
+    
+    // Slower movement
+    particle.userData = {
+      speed: {
+        x: THREE.MathUtils.randFloatSpread(0.02), // Reduced speed
+        y: THREE.MathUtils.randFloatSpread(0.02),
+        z: THREE.MathUtils.randFloatSpread(0.02)
       },
-      moveSpeed: {
-        x: (Math.random() - 0.5) * 0.05,
-        y: (Math.random() - 0.5) * 0.05,
-        z: (Math.random() - 0.5) * 0.02
+      rotation: {
+        x: THREE.MathUtils.randFloatSpread(0.005), // Reduced rotation
+        y: THREE.MathUtils.randFloatSpread(0.005)
       }
     };
     
-    scene.add(object);
-    objects.push(object);
+    particles.add(particle);
   }
   
-  // Add ambient light
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-  scene.add(ambientLight);
+  scene.add(particles);
   
-  // Add directional light
-  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-  directionalLight.position.set(1, 1, 1);
-  scene.add(directionalLight);
-  
-  // Animation
+  // Animation - simplified and slowed down
   function animate() {
     requestAnimationFrame(animate);
     
-    // Animate objects
-    objects.forEach(obj => {
-      // Rotate each object
-      obj.rotation.x += obj.userData.rotationSpeed.x;
-      obj.rotation.y += obj.userData.rotationSpeed.y;
-      obj.rotation.z += obj.userData.rotationSpeed.z;
+    particles.children.forEach(particle => {
+      // Slower and less dramatic movement
+      particle.position.x += particle.userData.speed.x;
+      particle.position.y += particle.userData.speed.y;
+      particle.position.z += particle.userData.speed.z;
       
-      // Move each object
-      obj.position.x += obj.userData.moveSpeed.x;
-      obj.position.y += obj.userData.moveSpeed.y;
-      obj.position.z += obj.userData.moveSpeed.z;
+      // Apply slower rotation
+      particle.rotation.x += particle.userData.rotation.x;
+      particle.rotation.y += particle.userData.rotation.y;
       
-      // Reset if out of bounds
-      if (obj.position.x > 40) obj.position.x = -40;
-      if (obj.position.x < -40) obj.position.x = 40;
-      if (obj.position.y > 40) obj.position.y = -40;
-      if (obj.position.y < -40) obj.position.y = 40;
-      if (obj.position.z > 0) obj.position.z = -40;
-      if (obj.position.z < -40) obj.position.z = 0;
+      // Gently reset particles that go out of bounds
+      if (Math.abs(particle.position.x) > 20 || 
+          Math.abs(particle.position.y) > 20 || 
+          Math.abs(particle.position.z) > 20) {
+        
+        // Reset with gentler transition
+        const distance = 15;
+        const theta = THREE.MathUtils.randFloatSpread(360);
+        const phi = THREE.MathUtils.randFloatSpread(180);
+        
+        particle.position.x = distance * Math.sin(theta) * Math.cos(phi);
+        particle.position.y = distance * Math.sin(theta) * Math.sin(phi);
+        particle.position.z = distance * Math.cos(theta);
+      }
     });
+    
+    // Slow camera movement for subtle effect
+    camera.position.x = Math.sin(Date.now() * 0.0001) * 1.5; // Reduced movement
+    camera.position.y = Math.cos(Date.now() * 0.0001) * 1.5;
+    camera.lookAt(scene.position);
     
     renderer.render(scene, camera);
   }
@@ -1158,7 +896,6 @@ function init3DBackground() {
   
   window.addEventListener('resize', handleResize);
   
-  // Start animation
   animate();
 }
 
@@ -1172,6 +909,10 @@ function initGame(gameId) {
   const answerInput = document.getElementById('answer-input');
   const submitButton = document.getElementById('submit-answer');
   const scoreElement = document.getElementById('score');
+  
+  // Get URL parameters to determine topic
+  const urlParams = new URLSearchParams(window.location.hash.split('?')[1] || '');
+  const topicId = urlParams.get('topic') || '';
   
   // Debug element existence
   console.log("Game elements found:", {
@@ -1233,8 +974,14 @@ function initGame(gameId) {
     // Game-specific setup
     switch(gameId) {
       case 'dungeon-escape':
-        console.log("Starting Dungeon Escape game");
-        setupDungeonEscape(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        // For dungeon-escape, use NumberAdventure if the topic is counting
+        if (topicId === 'counting') {
+          console.log("Starting Number Adventure game (counting version of Dungeon Escape)");
+          setupNumberAdventure(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        } else {
+          console.log("Starting Dungeon Escape game");
+          setupDungeonEscape(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        }
         break;
       case 'shape-builder':
         console.log("Starting Shape Builder game");
@@ -1260,9 +1007,18 @@ function initGame(gameId) {
         console.log("Starting Decimal Dash game");
         setupDecimalDash(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
         break;
+      case 'number-line':
+        console.log("Starting Number Line game");
+        setupNumberLine(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        break;
+      case 'count-objects':
+        console.log("Starting Count Objects game");
+        setupCountObjects(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
+        break;
       default:
-        console.error("Unknown game ID:", gameId);
-        questionContainer.textContent = "Error: Game not found!";
+        // For other game IDs, default to DungeonEscape as a fallback
+        console.log("Unknown game ID:", gameId, "- Using Dungeon Escape as fallback");
+        setupDungeonEscape(gameCanvas, questionContainer, answerInput, submitButton, scoreElement);
     }
     console.log(`${gameId} initialized successfully`);
   } catch (error) {
@@ -1280,15 +1036,68 @@ function initGame(gameId) {
   }
 }
 
+// Function to handle mobile viewport height issues
+function setupMobileViewportFix() {
+  // Fix for 100vh on mobile
+  const setVh = () => {
+    const vh = window.innerHeight * 0.01;
+    document.documentElement.style.setProperty('--vh', `${vh}px`);
+  };
+  
+  // Set the --vh custom property
+  setVh();
+  
+  // Update on resize and orientation change
+  window.addEventListener('resize', setVh);
+  window.addEventListener('orientationchange', setVh);
+}
+
+// Handle orientation changes
+function handleOrientationChange() {
+  // Force redraw after orientation change is complete
+  setTimeout(() => {
+    // Trigger resize event to update UI elements
+    window.dispatchEvent(new Event('resize'));
+    
+    // Ensure header and navigation are properly shown
+    const mobileMenu = document.querySelector('.mobile-menu-toggle');
+    const nav = document.querySelector('nav');
+    
+    if (mobileMenu && nav) {
+      mobileMenu.classList.remove('active');
+      nav.classList.remove('active');
+    }
+  }, 200);
+}
+
 // Setup Mobile Menu Toggle
 function setupMobileMenu() {
   const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
   const nav = document.querySelector('nav');
   
   if (mobileMenuToggle) {
-    mobileMenuToggle.addEventListener('click', () => {
+    // Use touchstart for faster response on mobile
+    mobileMenuToggle.addEventListener('touchstart', (e) => {
       mobileMenuToggle.classList.toggle('active');
       nav.classList.toggle('active');
+      e.preventDefault(); // Prevent default touch behavior
+    }, { passive: false });
+    
+    // Keep click event for desktop
+    mobileMenuToggle.addEventListener('click', (e) => {
+      mobileMenuToggle.classList.toggle('active');
+      nav.classList.toggle('active');
+      e.preventDefault();
+    });
+    
+    // Close menu when clicking or touching elsewhere
+    document.addEventListener('click', (e) => {
+      if (nav.classList.contains('active') && 
+          !nav.contains(e.target) && 
+          !mobileMenuToggle.contains(e.target)) {
+        mobileMenuToggle.classList.remove('active');
+        nav.classList.remove('active');
+      }
     });
     
     // Close menu when clicking on links

@@ -1,0 +1,590 @@
+{
+  "grades": {
+    "1": {
+      "title": "1st Grade",
+      "topics": {
+        "counting": {
+          "title": "Counting",
+          "icon": "🔢",
+          "description": "Count objects and learn number sequences",
+          "games": [
+            {
+              "id": "number-line",
+              "name": "Number Line",
+              "description": "Place numbers in the correct order on a number line",
+              "unlocked": true
+            },
+            {
+              "id": "count-objects",
+              "name": "Count Objects",
+              "description": "Count the objects and select the correct number",
+              "unlocked": true
+            },
+            {
+              "id": "dungeon-escape",
+              "name": "Number Adventure",
+              "description": "Count treasures to open castle doors on your adventure",
+              "unlocked": true
+            }
+          ]
+        },
+        "addition": {
+          "title": "Addition",
+          "icon": "➕",
+          "description": "Basic addition with numbers 1-20",
+          "games": [
+            {
+              "id": "dungeon-escape",
+              "name": "Dungeon Escape",
+              "description": "Solve addition problems to escape the dungeon",
+              "unlocked": true
+            },
+            {
+              "id": "fruit-addition",
+              "name": "Fruit Addition",
+              "description": "Add fruits to practice basic addition",
+              "unlocked": false
+            }
+          ]
+        },
+        "subtraction": {
+          "title": "Subtraction",
+          "icon": "➖",
+          "description": "Basic subtraction with numbers 1-20",
+          "games": [
+            {
+              "id": "dungeon-escape",
+              "name": "Subtraction Castle",
+              "description": "Subtract objects to escape the castle",
+              "unlocked": true
+            },
+            {
+              "id": "space-blast",
+              "name": "Space Blast",
+              "description": "Subtract objects to clear space debris",
+              "unlocked": false
+            }
+          ]
+        },
+        "shapes": {
+          "title": "Shapes",
+          "icon": "◯",
+          "description": "Identify and classify basic 2D shapes",
+          "games": [
+            {
+              "id": "shape-builder",
+              "name": "Shape Builder",
+              "description": "Build shapes and match the outlines",
+              "unlocked": true
+            },
+            {
+              "id": "shape-hunt",
+              "name": "Shape Hunt",
+              "description": "Find shapes in the environment",
+              "unlocked": false
+            }
+          ]
+        }
+      }
+    },
+    "2": {
+      "title": "2nd Grade",
+      "topics": {
+        "addition": {
+          "title": "Addition",
+          "icon": "➕",
+          "description": "Addition with numbers up to 100",
+          "games": [
+            {
+              "id": "add-blocks",
+              "name": "Add Blocks",
+              "description": "Add two-digit numbers with blocks",
+              "unlocked": true
+            }
+          ]
+        },
+        "subtraction": {
+          "title": "Subtraction",
+          "icon": "➖",
+          "description": "Subtraction with numbers up to 100",
+          "games": [
+            {
+              "id": "submarine",
+              "name": "Submarine Math",
+              "description": "Subtract to find the depth of your submarine",
+              "unlocked": true
+            }
+          ]
+        },
+        "money": {
+          "title": "Money",
+          "icon": "💰",
+          "description": "Counting money and making change",
+          "games": [
+            {
+              "id": "coin-counter",
+              "name": "Coin Counter",
+              "description": "Count coins and make correct change",
+              "unlocked": true
+            }
+          ]
+        },
+        "time": {
+          "title": "Time",
+          "icon": "🕒",
+          "description": "Telling time to the nearest 5 minutes",
+          "games": [
+            {
+              "id": "clock-challenge",
+              "name": "Clock Challenge",
+              "description": "Set the clock to the correct time",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    },
+    "3": {
+      "title": "3rd Grade",
+      "topics": {
+        "multiplication": {
+          "title": "Multiplication",
+          "icon": "✖️",
+          "description": "Multiplication facts and properties",
+          "games": [
+            {
+              "id": "space-shooter",
+              "name": "Space Shooter",
+              "description": "Practice multiplication by shooting correct answers",
+              "unlocked": true
+            },
+            {
+              "id": "times-tables",
+              "name": "Times Tables",
+              "description": "Practice multiplication facts",
+              "unlocked": true
+            }
+          ]
+        },
+        "division": {
+          "title": "Division",
+          "icon": "➗",
+          "description": "Basic division concepts and facts",
+          "games": [
+            {
+              "id": "pizza-division",
+              "name": "Pizza Division",
+              "description": "Divide pizzas equally among friends",
+              "unlocked": true
+            }
+          ]
+        },
+        "fractions": {
+          "title": "Fractions",
+          "icon": "🔢",
+          "description": "Introduction to fractions and equivalent fractions",
+          "games": [
+            {
+              "id": "fraction-bars",
+              "name": "Fraction Bars",
+              "description": "Match equivalent fractions",
+              "unlocked": true
+            }
+          ]
+        },
+        "area": {
+          "title": "Area",
+          "icon": "📏",
+          "description": "Calculate area of rectangles and squares",
+          "games": [
+            {
+              "id": "area-builder",
+              "name": "Area Builder",
+              "description": "Build rectangles with specific areas",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    },
+    "4": {
+      "title": "4th Grade",
+      "topics": {
+        "multidigit": {
+          "title": "Multi-digit Math",
+          "icon": "🧮",
+          "description": "Multi-digit multiplication and division",
+          "games": [
+            {
+              "id": "multiplication-grid",
+              "name": "Multiplication Grid",
+              "description": "Use the area model for multi-digit multiplication",
+              "unlocked": true
+            }
+          ]
+        },
+        "factors": {
+          "title": "Factors & Multiples",
+          "icon": "🔄",
+          "description": "Prime and composite numbers, factors, and multiples",
+          "games": [
+            {
+              "id": "factor-finder",
+              "name": "Factor Finder",
+              "description": "Find factors of numbers",
+              "unlocked": true
+            }
+          ]
+        },
+        "fractions": {
+          "title": "Fraction Operations",
+          "icon": "➗",
+          "description": "Add and subtract fractions with like denominators",
+          "games": [
+            {
+              "id": "fraction-add",
+              "name": "Fraction Addition",
+              "description": "Add fractions with like denominators",
+              "unlocked": true
+            }
+          ]
+        },
+        "angles": {
+          "title": "Angles",
+          "icon": "📐",
+          "description": "Measure and classify angles",
+          "games": [
+            {
+              "id": "angle-hunter",
+              "name": "Angle Hunter",
+              "description": "Find and measure angles",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    },
+    "5": {
+      "title": "5th Grade",
+      "topics": {
+        "decimals": {
+          "title": "Decimals",
+          "icon": "💯",
+          "description": "Operations with decimals to hundredths",
+          "games": [
+            {
+              "id": "decimal-dash",
+              "name": "Decimal Dash",
+              "description": "Order decimals on a number line",
+              "unlocked": true
+            }
+          ]
+        },
+        "fractions": {
+          "title": "Fraction Operations",
+          "icon": "➗",
+          "description": "Add, subtract, multiply fractions",
+          "games": [
+            {
+              "id": "fraction-multiply",
+              "name": "Fraction Multiplication",
+              "description": "Multiply fractions",
+              "unlocked": true
+            }
+          ]
+        },
+        "volume": {
+          "title": "Volume",
+          "icon": "📦",
+          "description": "Measure volume of rectangular prisms",
+          "games": [
+            {
+              "id": "volume-quest",
+              "name": "Volume Quest",
+              "description": "Calculate the volume of rectangular prisms",
+              "unlocked": true
+            }
+          ]
+        },
+        "coordinates": {
+          "title": "Coordinate Plane",
+          "icon": "📍",
+          "description": "Plot points on the coordinate plane",
+          "games": [
+            {
+              "id": "coordinate-quest",
+              "name": "Coordinate Quest",
+              "description": "Plot points on a coordinate plane",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    },
+    "6": {
+      "title": "6th Grade",
+      "topics": {
+        "ratios": {
+          "title": "Ratios & Proportions",
+          "icon": "⚖️",
+          "description": "Understand ratio concepts and use ratio reasoning",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "expressions": {
+          "title": "Expressions & Equations",
+          "icon": "🔣",
+          "description": "Write, read, and evaluate expressions",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "statistics": {
+          "title": "Statistics",
+          "icon": "📊",
+          "description": "Statistical variability and distributions",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "geometry": {
+          "title": "Geometry",
+          "icon": "📐",
+          "description": "Area, surface area, and volume",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    },
+    "7": {
+      "title": "7th Grade",
+      "topics": {
+        "proportional": {
+          "title": "Proportional Relationships",
+          "icon": "📈",
+          "description": "Analyze and represent proportional relationships",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "rational": {
+          "title": "Rational Numbers",
+          "icon": "🔢",
+          "description": "Operations with rational numbers",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "probability": {
+          "title": "Probability",
+          "icon": "🎲",
+          "description": "Develop understanding of probability",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "scale": {
+          "title": "Scale Drawing",
+          "icon": "✏️",
+          "description": "Draw geometric figures and describe relationships",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    },
+    "8": {
+      "title": "8th Grade",
+      "topics": {
+        "linear": {
+          "title": "Linear Equations",
+          "icon": "📈",
+          "description": "Analyze and solve linear equations",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "functions": {
+          "title": "Functions",
+          "icon": "🔄",
+          "description": "Define, evaluate, and compare functions",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "geometry": {
+          "title": "Geometry",
+          "icon": "📐",
+          "description": "Understand congruence and similarity",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        },
+        "pythagorean": {
+          "title": "Pythagorean Theorem",
+          "icon": "📏",
+          "description": "Apply the Pythagorean Theorem",
+          "games": [
+            {
+              "id": "pattern-puzzle",
+              "name": "Pattern Puzzle",
+              "description": "Complete the pattern by finding the missing piece",
+              "unlocked": true
+            }
+          ]
+        }
+      }
+    }
+  },
+  "gameInfo": {
+    "dungeon-escape": {
+      "title": "Dungeon Escape",
+      "description": "Solve equations to open doors and escape the dungeon!"
+    },
+    "shape-builder": {
+      "title": "Shape Builder",
+      "description": "Build shapes and match the outlines to learn geometry!"
+    },
+    "volume-quest": {
+      "title": "Volume Quest",
+      "description": "Calculate the volume of 3D objects to progress!"
+    },
+    "pattern-puzzle": {
+      "title": "Pattern Puzzle",
+      "description": "Complete the pattern by finding the missing piece!"
+    },
+    "space-shooter": {
+      "title": "Space Shooter",
+      "description": "Practice multiplication by shooting correct answers!"
+    },
+    "times-tables": {
+      "title": "Times Tables",
+      "description": "Learn multiplication facts with an interactive times table!"
+    },
+    "decimal-dash": {
+      "title": "Decimal Dash",
+      "description": "Order decimals from smallest to largest on a number line!"
+    },
+    "number-line": {
+      "title": "Number Line",
+      "description": "Learn to count and order numbers by placing them on a number line!"
+    },
+    "count-objects": {
+      "title": "Count Objects",
+      "description": "Count colorful 3D objects and improve your counting skills!"
+    },
+    "number-adventure": {
+      "title": "Number Adventure",
+      "description": "Embark on a magical journey, counting treasures to open castle doors!"
+    },
+    "add-blocks": {
+      "title": "Add Blocks",
+      "description": "Add two-digit numbers with blocks to improve your addition skills!"
+    },
+    "submarine": {
+      "title": "Submarine Math",
+      "description": "Subtract to find the correct depth for your submarine adventure!"
+    },
+    "coin-counter": {
+      "title": "Coin Counter",
+      "description": "Count coins and make correct change in this money-based game!"
+    },
+    "clock-challenge": {
+      "title": "Clock Challenge",
+      "description": "Set the clock to the correct time to master telling time!"
+    },
+    "pizza-division": {
+      "title": "Pizza Division",
+      "description": "Divide pizzas equally among friends to learn division concepts!"
+    },
+    "fraction-bars": {
+      "title": "Fraction Bars",
+      "description": "Match equivalent fractions using visual fraction bars!"
+    },
+    "area-builder": {
+      "title": "Area Builder",
+      "description": "Build rectangles with specific areas to master area calculations!"
+    },
+    "multiplication-grid": {
+      "title": "Multiplication Grid",
+      "description": "Use the area model for multi-digit multiplication problems!"
+    },
+    "factor-finder": {
+      "title": "Factor Finder",
+      "description": "Find all the factors of different numbers in this mathematical adventure!"
+    },
+    "fraction-add": {
+      "title": "Fraction Addition",
+      "description": "Add fractions with like denominators to strengthen your fraction skills!"
+    },
+    "angle-hunter": {
+      "title": "Angle Hunter",
+      "description": "Find and measure angles in this geometry-based game!"
+    },
+    "fraction-multiply": {
+      "title": "Fraction Multiplication",
+      "description": "Multiply fractions to solve problems and advance in the game!"
+    },
+    "coordinate-quest": {
+      "title": "Coordinate Quest",
+      "description": "Plot points on a coordinate plane to complete the quest!"
+    }
+  }
+} 

@@ -1,17 +1,18 @@
 :root {
-  --primary-color: #4361ee;
-  --secondary-color: #3a0ca3;
-  --accent-color: #7209b7;
-  --text-color: #1e293b;
-  --background-color: #f8f9ff;
+  --primary-color: #4b97d2;
+  --secondary-color: #6a8caf;
+  --accent-color: #78a5b3;
+  --text-color: #3a3e42;
+  --background-color: #f8fafc;
   --card-background: #fff;
-  --shadow-color: rgba(67, 97, 238, 0.15);
-  --gradient-start: #4361ee;
-  --gradient-mid: #3a0ca3;
-  --gradient-end: #7209b7;
-  --success-color: #4ade80;
-  --error-color: #f87171;
-  --warning-color: #fbbf24;
+  --shadow-color: rgba(75, 151, 210, 0.1);
+  --gradient-start: #4b97d2;
+  --gradient-mid: #6a8caf;
+  --gradient-end: #78a5b3;
+  --success-color: #60bd7a;
+  --error-color: #e98a8a;
+  --warning-color: #f0c277;
+  --vh: 1vh;
 }
 
 * {
@@ -28,12 +29,13 @@ body {
   position: relative;
   overflow-x: hidden;
   background-image: 
-    radial-gradient(circle at 100% 0%, rgba(114, 9, 183, 0.03) 0%, transparent 25%),
-    radial-gradient(circle at 0% 80%, rgba(67, 97, 238, 0.03) 0%, transparent 25%);
+    radial-gradient(circle at 100% 0%, rgba(120, 165, 179, 0.02) 0%, transparent 20%),
+    radial-gradient(circle at 0% 80%, rgba(75, 151, 210, 0.02) 0%, transparent 20%);
 }
 
 #app {
-  min-height: 100vh;
+  min-height: 100vh; /* Fallback */
+  min-height: calc(var(--vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -55,6 +57,8 @@ body {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -63,7 +67,7 @@ header {
   color: white;
   padding: 1rem 0;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
 }
@@ -77,20 +81,10 @@ header::before {
   height: 200%;
   background: linear-gradient(
     transparent,
-    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05),
     transparent
   );
   transform: rotate(45deg);
-  animation: headerShine 6s infinite;
-}
-
-@keyframes headerShine {
-  0% {
-    transform: translateX(-100%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(45deg);
-  }
 }
 
 .logo {
@@ -152,43 +146,31 @@ nav a:hover::after {
   display: inline-block;
   background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
   color: white;
-  padding: 10px 20px;
+  padding: 12px 24px;
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
   border: none;
-  border-radius: 30px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: all 0.3s;
-  box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+  transition: all 0.2s;
+  box-shadow: 0 3px 8px rgba(75, 151, 210, 0.2);
   position: relative;
-  overflow: hidden;
 }
 
 .btn::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.2) 0%,
-    rgba(255, 255, 255, 0) 60%
-  );
-  border-radius: 30px;
+  content: none;
 }
 
 .btn:hover {
   background: linear-gradient(135deg, var(--gradient-mid), var(--gradient-end));
-  transform: translateY(-3px);
-  box-shadow: 0 6px 18px rgba(67, 97, 238, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(75, 151, 210, 0.3);
 }
 
 .btn:active {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(67, 97, 238, 0.4);
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(75, 151, 210, 0.3);
 }
 
 .btn-primary {
@@ -222,10 +204,10 @@ nav a:hover::after {
 
 .card {
   background-color: var(--card-background);
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 25px var(--shadow-color);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 6px 15px var(--shadow-color);
+  transition: all 0.3s ease;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -233,27 +215,12 @@ nav a:hover::after {
 }
 
 .card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0)
-  );
-  opacity: 0;
-  transition: opacity 0.4s;
+  content: none;
 }
 
 .card:hover {
-  transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(67, 97, 238, 0.25);
-}
-
-.card:hover::before {
-  opacity: 1;
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(75, 151, 210, 0.15);
 }
 
 .card-header {
@@ -272,34 +239,11 @@ nav a:hover::after {
 }
 
 .card-header::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  transform: rotate(45deg);
-  transition: all 0.6s;
-  opacity: 0;
+  content: none;
 }
 
 .card:hover .card-header::after {
-  animation: shine 1.5s;
-  opacity: 1;
-}
-
-@keyframes shine {
-  0% {
-    transform: translateX(-100%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(100%) rotate(45deg);
-  }
+  animation: none;
 }
 
 .card-body {
@@ -317,33 +261,36 @@ nav a:hover::after {
 .advanced-section {
   margin-top: 30px;
   padding: 25px;
-  border-radius: 16px;
-  background-color: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s;
+  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s;
 }
 
 .advanced-section:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
 /* Game Canvas */
 .game-container {
+  height: min(70vh, 600px); /* Fallback */
+  height: min(calc(var(--vh, 1vh) * 70), 600px);
+  min-height: 300px;
+  max-height: 700px;
   width: 100%;
-  height: 70vh;
-  min-height: 500px;
   margin: 25px 0;
   position: relative;
-  background-color: #f0f5ff;
+  background-color: #f2f7fc;
   border: none;
-  border-radius: 16px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 10px 30px rgba(67, 97, 238, 0.15);
-  transition: box-shadow 0.3s;
+  box-shadow: 0 6px 15px rgba(75, 151, 210, 0.1);
+  transition: box-shadow 0.2s;
+  touch-action: manipulation;
 }
 
 .game-container:hover {
-  box-shadow: 0 15px 40px rgba(67, 97, 238, 0.2);
+  box-shadow: 0 8px 20px rgba(75, 151, 210, 0.15);
 }
 
 #game-canvas {
@@ -364,11 +311,11 @@ canvas {
 #game-controls {
   margin: 25px 0;
   text-align: center;
-  padding: 20px;
+  padding: 25px;
   background-color: white;
-  border-radius: 16px;
-  box-shadow: 0 10px 25px rgba(67, 97, 238, 0.1);
-  transition: transform 0.3s;
+  border-radius: 12px;
+  box-shadow: 0 6px 15px rgba(75, 151, 210, 0.08);
+  transition: transform 0.2s;
   position: relative;
   overflow: hidden;
 }
@@ -379,48 +326,48 @@ canvas {
   top: 0;
   left: 0;
   width: 100%;
-  height: 5px;
-  background: linear-gradient(90deg, #4361ee, #7209b7);
+  height: 3px;
+  background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
   z-index: 1;
 }
 
 #game-controls:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
 #question-container {
-  font-size: 1.4rem;
-  margin-bottom: 20px;
+  font-size: 1.5rem;
+  margin-bottom: 25px;
   font-weight: 700;
   color: var(--text-color);
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  text-shadow: none;
 }
 
 #answer-input {
-  padding: 12px 20px;
+  padding: 14px 22px;
   margin-right: 15px;
-  width: 180px;
+  width: 200px;
   font-size: 1.1rem;
   border: 2px solid #e2e8f0;
-  border-radius: 30px;
-  transition: all 0.3s;
+  border-radius: 8px;
+  transition: all 0.2s;
   outline: none;
 }
 
 #answer-input:focus {
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  box-shadow: 0 0 0 3px rgba(75, 151, 210, 0.15);
 }
 
 #answer-input.error {
   border-color: var(--error-color);
-  animation: shake 0.5s;
+  animation: shake 0.4s;
 }
 
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-10px); }
-  40%, 80% { transform: translateX(10px); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
 }
 
 /* Game Score */
@@ -428,9 +375,9 @@ canvas {
   font-size: 1.3rem;
   font-weight: 700;
   color: var(--primary-color);
-  padding: 8px 16px;
-  background: rgba(67, 97, 238, 0.1);
-  border-radius: 30px;
+  padding: 10px 20px;
+  background: rgba(75, 151, 210, 0.08);
+  border-radius: 8px;
   display: inline-block;
 }
 
@@ -455,29 +402,26 @@ canvas {
 
 /* Animations */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 .fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 /* Welcome Section */
 .welcome-section {
   text-align: center;
-  padding: 50px 0 30px;
+  padding: 40px 0 25px;
   position: relative;
 }
 
 .welcome-section h2 {
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   font-weight: 800;
   margin-bottom: 15px;
-  background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--primary-color);
   display: inline-block;
 }
 
@@ -526,19 +470,7 @@ footer {
 }
 
 footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 5px;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0),
-    rgba(255, 255, 255, 0.6),
-    rgba(255, 255, 255, 0)
-  );
-  animation: footerShine 2s infinite;
+  content: none;
 }
 
 @keyframes footerShine {
@@ -557,24 +489,30 @@ footer a:hover {
   text-decoration: none;
 }
 
-/* Responsive Adjustments */
+/* Responsive improvements */
 @media (max-width: 1024px) {
   .grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
   }
   
   .welcome-section h2 {
-    font-size: 2.5rem;
+    font-size: 2.4rem;
   }
 }
 
 @media (max-width: 768px) {
   .grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
   
   .welcome-section h2 {
-    font-size: 2.2rem;
+    font-size: 2rem;
+  }
+  
+  .welcome-section p {
+    font-size: 1.1rem;
   }
   
   .logo {
@@ -585,11 +523,47 @@ footer a:hover {
     padding: 0.5rem 0.8rem;
     font-size: 0.9rem;
   }
+  
+  .btn {
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    min-width: 120px;
+  }
+  
+  /* Improved game controls for mobile */
+  #game-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  #game-controls > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  
+  #answer-input {
+    width: 100%;
+    max-width: 280px;
+    margin: 0 0 15px 0;
+  }
+  
+  #submit-answer {
+    width: 100%;
+    max-width: 280px;
+  }
 }
 
 @media (max-width: 480px) {
   .grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .welcome-section {
+    padding: 30px 0 20px;
   }
   
   .welcome-section h2 {
@@ -598,10 +572,15 @@ footer a:hover {
   
   .welcome-section p {
     font-size: 1rem;
+    padding: 0 10px;
   }
   
   .logo {
     font-size: 1.6rem;
+  }
+  
+  .tagline {
+    font-size: 0.9rem;
   }
   
   .card {
@@ -610,12 +589,203 @@ footer a:hover {
   
   #question-container {
     font-size: 1.2rem;
+    padding: 0 10px;
   }
   
   #answer-input {
-    width: 150px;
-    padding: 10px 15px;
+    width: 100%;
+    max-width: 100%;
+    padding: 12px 16px;
+    box-sizing: border-box;
   }
+  
+  .btn {
+    width: 100%;
+    max-width: 100%;
+    margin: 5px 0;
+    padding: 12px 16px;
+    box-sizing: border-box;
+  }
+  
+  .game-container {
+    height: 60vh; /* Fallback */
+    height: calc(var(--vh, 1vh) * 60);
+    min-height: 300px;
+  }
+  
+  .grade-title h3 {
+    font-size: 1.4rem;
+    padding: 5px 15px;
+  }
+  
+  .grade-title h3::before, .grade-title h3::after {
+    display: none;
+  }
+  
+  .card-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .card-body p {
+    font-size: 0.9rem;
+  }
+  
+  footer {
+    padding: 1rem 0;
+  }
+  
+  /* Fix for mobile menu positioning */
+  .mobile-menu-toggle {
+    top: 15px;
+    right: 15px;
+  }
+}
+
+/* Improved mobile menu */
+@media (max-width: 768px) {
+  .mobile-menu-toggle {
+    display: flex;
+  }
+  
+  nav {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    right: 0;
+    background-color: white;
+    flex-direction: column;
+    align-items: center;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    z-index: 999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0;
+  }
+  
+  nav.active {
+    max-height: 300px;
+    padding: 15px 0;
+  }
+  
+  nav a {
+    width: 80%;
+    text-align: center;
+    margin: 8px 0;
+    padding: 12px 0;
+  }
+  
+  /* Adjust header padding for mobile */
+  header {
+    padding: 1.2rem 0;
+  }
+  
+  header .container {
+    position: relative;
+    padding-right: 40px;
+  }
+}
+
+/* Touch-friendly styling for game elements */
+@media (hover: none) {
+  /* For touch devices, make hover effects apply on touch */
+  .card:active {
+    transform: translateY(-3px);
+  }
+  
+  .btn:active {
+    transform: translateY(-2px);
+  }
+  
+  /* Remove hover animations that cause issues on mobile */
+  .card:hover {
+    transform: none;
+  }
+  
+  #game-controls:hover {
+    transform: none;
+  }
+  
+  /* Increase tap targets for mobile */
+  nav a {
+    padding: 12px 15px;
+    margin: 5px;
+  }
+  
+  .btn {
+    padding: 14px 24px;
+  }
+}
+
+/* Ensure proper canvas responsiveness */
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  touch-action: manipulation;
+}
+
+/* Fix for iOS iframe rendering */
+.game-container {
+  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+}
+
+/* iPhone X+ Safe Area Support */
+@supports (padding: max(0px)) {
+  header, footer {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+  
+  .container {
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
+  }
+  
+  nav {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+  .game-container {
+    height: 80vh; /* Fallback */
+    height: calc(var(--vh, 1vh) * 80);
+  }
+  
+  .welcome-section {
+    padding: 20px 0 10px;
+  }
+  
+  header {
+    padding: 0.5rem 0;
+  }
+  
+  .logo {
+    font-size: 1.5rem;
+  }
+  
+  .tagline {
+    font-size: 0.8rem;
+  }
+  
+  #game-controls {
+    padding: 15px;
+    margin: 15px 0;
+  }
+  
+  footer {
+    padding: 0.5rem 0;
+  }
+}
+
+/* Additional accessibility improvements */
+.btn:focus, input:focus, button:focus, a:focus {
+  outline: 3px solid rgba(75, 151, 210, 0.4);
+  outline-offset: 2px;
 }
 
 /* Mobile Menu Styles */
@@ -653,145 +823,54 @@ footer a:hover {
   transform: translateY(-9px) rotate(-45deg);
 }
 
-@media (max-width: 768px) {
-  .mobile-menu-toggle {
-    display: flex;
-  }
-  
-  nav {
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background-color: white;
-    flex-direction: column;
-    align-items: center;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease;
-    z-index: 99;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 0;
-  }
-  
-  nav.active {
-    max-height: 300px;
-    padding: 15px 0;
-  }
-  
-  nav a {
-    width: 80%;
-    text-align: center;
-    margin: 8px 0;
-    padding: 10px 0;
-  }
-  
-  header .container {
-    position: relative;
-  }
-  
-  /* Ensure space for menu toggle */
-  .logo, .tagline {
-    padding-right: 40px;
-  }
-  
-  /* Game controls adjustments */
-  #game-controls div {
-    flex-direction: column;
-  }
-  
-  #answer-input {
-    width: 100%;
-    max-width: 250px;
-    margin: 0 0 15px 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .grid {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .welcome-section h2 {
-    font-size: 1.8rem;
-  }
-  
-  .welcome-section p {
-    font-size: 1rem;
-  }
-  
-  .logo {
-    font-size: 1.6rem;
-  }
-  
-  .card {
-    transform: none !important;
-  }
-  
-  #question-container {
-    font-size: 1.2rem;
-  }
-  
-  #answer-input {
-    width: 100%;
-    max-width: 100%;
-    padding: 10px 15px;
-  }
-  
-  .btn {
-    width: 100%;
-    margin: 5px 0;
-    padding: 12px 20px;
-  }
-  
-  .game-container {
-    height: 60vh;
-    min-height: 350px;
-  }
-  
-  .grade-title h3 {
-    font-size: 1.4rem;
-  }
-  
-  .grade-title h3::before, .grade-title h3::after {
-    display: none;
-  }
-  
-  .card-header h3 {
-    font-size: 1.2rem;
-  }
-  
-  .card-body p {
-    font-size: 0.9rem;
-  }
-  
-  footer {
-    padding: 1rem 0;
-  }
-}
-
-/* Ensure canvas responsiveness */
-canvas {
-  width: 100% !important;
-  height: 100% !important;
-  display: block;
+/* Ensure buttons are touch-friendly */
+.btn, button, input, select {
   touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 44px; /* Minimum touch target size */
 }
 
-/* Touch-friendly controls */
-.btn, input, button {
-  touch-action: manipulation;
+/* Loading Screen */
+.loading-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  height: calc(var(--vh, 1vh) * 100);
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-/* Improved keyboard accessibility */
-.btn:focus, input:focus, button:focus {
-  outline: 3px solid rgba(67, 97, 238, 0.4);
+.loading-screen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
-/* Ensure height of game container is appropriate */
-.game-container {
-  height: 60vh;
-  min-height: 400px;
-  max-height: 650px;
+.loading-logo {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
