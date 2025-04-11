@@ -1,0 +1,1 @@
+"serviceWorker"in navigator&&window.addEventListener("load",()=>{const r="/mathorgame/";navigator.serviceWorker.register(`${r}sw.js`,{scope:r}).then(e=>{console.log("Service Worker registered with scope:",e.scope)}).catch(e=>{console.error("Service Worker registration failed:",e)})});
