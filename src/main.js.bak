@@ -42,7 +42,7 @@ function homePage() {
   app.innerHTML = `
     <header>
       <div class="container">
-        <h1 class="logo">MathOrGame</h1>
+        <h1 class="logo"><a href="#">MathOrGame</a></h1>
         <p class="tagline">Learn Math. Play Games.</p>
       </div>
     </header>

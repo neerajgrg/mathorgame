@@ -171,7 +171,7 @@ function homePage() {
     
     <header>
       <div class="container">
-        <h1 class="logo">MathOrGame</h1>
+        <h1 class="logo"><a href="#" style="text-decoration: none; color: inherit;">MathOrGame</a></h1>
         <p class="tagline">Learn Math. Play Games.</p>
         <div class="mobile-menu-toggle">
           <span class="line1"></span>
@@ -206,7 +206,7 @@ function homePage() {
             <p>Basic addition, subtraction, shapes, and patterns</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=1" class="btn">View Topics</a>
+            <a href="#topics?grade=1" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -218,7 +218,7 @@ function homePage() {
             <p>Addition, subtraction, basic geometry, and measurement</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=2" class="btn">View Topics</a>
+            <a href="#topics?grade=2" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -230,7 +230,7 @@ function homePage() {
             <p>Multiplication, division, fractions, and area</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=3" class="btn">View Topics</a>
+            <a href="#topics?grade=3" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -242,7 +242,7 @@ function homePage() {
             <p>Multi-digit arithmetic, factors, and geometry</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=4" class="btn">View Topics</a>
+            <a href="#topics?grade=4" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -254,7 +254,7 @@ function homePage() {
             <p>Decimals, fractions, and volume</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=5" class="btn">View Topics</a>
+            <a href="#topics?grade=5" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -266,7 +266,7 @@ function homePage() {
             <p>Ratios, equations, and statistical distributions</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=6" class="btn">View Topics</a>
+            <a href="#topics?grade=6" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -278,7 +278,7 @@ function homePage() {
             <p>Proportional relationships, expressions, and probability</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=7" class="btn">View Topics</a>
+            <a href="#topics?grade=7" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
         
@@ -290,7 +290,7 @@ function homePage() {
             <p>Linear equations, functions, and geometric transformations</p>
           </div>
           <div class="card-footer">
-            <a href="#topics?grade=8" class="btn">View Topics</a>
+            <a href="#topics?grade=8" class="btn btn-action">View Topics <i style="font-style: normal;">→</i></a>
           </div>
         </div>
       </div>
@@ -335,7 +335,7 @@ function topicsPage(path) {
   app.innerHTML = `
     <header>
       <div class="container">
-        <h1 class="logo">MathOrGame</h1>
+        <h1 class="logo"><a href="#" style="text-decoration: none; color: inherit;">MathOrGame</a></h1>
         <p class="tagline">Learn Math. Play Games.</p>
       </div>
     </header>
@@ -353,8 +353,8 @@ function topicsPage(path) {
       </div>
       
       <div class="game-header fade-in" style="display: flex; justify-content: flex-start; margin: 10px 0 20px;">
-        <a href="#" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-          <span style="margin-right: 5px;">&#8592;</span> Back to Grades
+        <a href="#" class="btn btn-back" aria-label="Back to Grades">
+          <i class="icon-arrow">←</i><span class="btn-text">Back to Grades</span>
         </a>
       </div>
       
@@ -368,7 +368,7 @@ function topicsPage(path) {
               <p>${topic.description}</p>
             </div>
             <div class="card-footer">
-              <a href="#games?grade=${grade}&topic=${topic.id}" class="btn">View Games</a>
+              <a href="#games?grade=${grade}&topic=${topic.id}" class="btn btn-action">View Games <i style="font-style: normal;">→</i></a>
             </div>
           </div>
         `).join('')}
@@ -408,7 +408,7 @@ function gamesPage(path) {
   app.innerHTML = `
     <header>
       <div class="container">
-        <h1 class="logo">MathOrGame</h1>
+        <h1 class="logo"><a href="#" style="text-decoration: none; color: inherit;">MathOrGame</a></h1>
         <p class="tagline">Learn Math. Play Games.</p>
       </div>
     </header>
@@ -426,8 +426,8 @@ function gamesPage(path) {
       </div>
       
       <div class="game-header fade-in" style="display: flex; justify-content: flex-start; margin: 10px 0 20px;">
-        <a href="#topics?grade=${grade}" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-          <span style="margin-right: 5px;">&#8592;</span> Back to Topics
+        <a href="#topics?grade=${grade}" class="btn btn-back" aria-label="Back to Topics">
+          <i class="icon-arrow">←</i><span class="btn-text">Back to Topics</span>
         </a>
       </div>
       
@@ -442,9 +442,9 @@ function gamesPage(path) {
             </div>
             <div class="card-footer">
               <a href="${game.unlocked ? `#game?id=${game.id}&grade=${grade}&topic=${topicId}` : '#'}" 
-                 class="btn ${!game.unlocked ? 'btn-disabled' : ''}" 
+                 class="btn ${!game.unlocked ? 'btn-disabled' : 'btn-action'}" 
                  ${!game.unlocked ? 'disabled' : ''}>
-                ${game.unlocked ? 'Play Game' : 'Coming Soon'}
+                ${game.unlocked ? 'Play Game <i style="font-style: normal;">→</i>' : 'Coming Soon'}
               </a>
             </div>
           </div>
@@ -488,7 +488,7 @@ function gamePage(path) {
   app.innerHTML = `
     <header>
       <div class="container">
-        <h1 class="logo">MathOrGame</h1>
+        <h1 class="logo"><a href="#" style="text-decoration: none; color: inherit;">MathOrGame</a></h1>
         <p class="tagline">Learn Math. Play Games.</p>
       </div>
     </header>
@@ -506,8 +506,8 @@ function gamePage(path) {
       </div>
       
       <div class="game-header fade-in" style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 20px;">
-        <a href="#games?grade=${grade}&topic=${topic}" class="btn" style="box-shadow: 0 3px 10px rgba(0,0,0,0.1);">
-          <span style="margin-right: 5px;">&#8592;</span> Back
+        <a href="#games?grade=${grade}&topic=${topic}" class="btn btn-back" aria-label="Back">
+          <i class="icon-arrow">←</i>
         </a>
         <div class="score-display">Score: <span id="score">0</span></div>
       </div>
@@ -520,7 +520,7 @@ function gamePage(path) {
         <div id="question-container">Loading question...</div>
         <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap;">
           <input type="text" id="answer-input" placeholder="Your answer..." autocomplete="off">
-          <button id="submit-answer" class="btn">Submit Answer</button>
+          <button id="submit-answer" class="btn btn-action">Submit Answer <i style="font-style: normal;">✓</i></button>
         </div>
       </div>
     </main>
@@ -564,7 +564,7 @@ function aboutPage() {
   app.innerHTML = `
     <header>
       <div class="container">
-        <h1 class="logo">MathOrGame</h1>
+        <h1 class="logo"><a href="#" style="text-decoration: none; color: inherit;">MathOrGame</a></h1>
         <p class="tagline">Learn Math. Play Games.</p>
       </div>
     </header>
@@ -614,7 +614,9 @@ function aboutPage() {
       </div>
       
       <div style="text-align: center; margin: 30px 0;">
-        <a href="#" class="btn fade-in" style="animation-delay: 0.4s">Back to Home</a>
+        <a href="#" class="btn btn-back fade-in" style="animation-delay: 0.4s" aria-label="Back to Home">
+          <i class="icon-arrow">←</i><span class="btn-text">Back to Home</span>
+        </a>
       </div>
     </main>
     

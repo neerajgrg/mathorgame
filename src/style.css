@@ -146,7 +146,7 @@ nav a:hover::after {
   display: inline-block;
   background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
   color: white;
-  padding: 12px 24px;
+  padding: 10px 20px;
   font-size: 1rem;
   font-weight: 600;
   text-decoration: none;
@@ -154,8 +154,10 @@ nav a:hover::after {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 3px 8px rgba(75, 151, 210, 0.2);
+  box-shadow: 0 3px 6px rgba(75, 151, 210, 0.2);
   position: relative;
+  white-space: nowrap;
+  text-align: center;
 }
 
 .btn::after {
@@ -165,12 +167,12 @@ nav a:hover::after {
 .btn:hover {
   background: linear-gradient(135deg, var(--gradient-mid), var(--gradient-end));
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(75, 151, 210, 0.3);
+  box-shadow: 0 4px 8px rgba(75, 151, 210, 0.3);
 }
 
 .btn:active {
   transform: translateY(0);
-  box-shadow: 0 2px 5px rgba(75, 151, 210, 0.3);
+  box-shadow: 0 2px 4px rgba(75, 151, 210, 0.3);
 }
 
 .btn-primary {
@@ -599,12 +601,14 @@ footer a:hover {
     box-sizing: border-box;
   }
   
-  .btn {
+  /* Action buttons - not back buttons */
+  .btn:not(.btn-back) {
     width: 100%;
     max-width: 100%;
     margin: 5px 0;
     padding: 12px 16px;
     box-sizing: border-box;
+    font-size: 0.95rem;
   }
   
   .game-container {
@@ -713,7 +717,17 @@ footer a:hover {
   }
   
   .btn {
-    padding: 14px 24px;
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+  
+  /* Special styling for back buttons on touch devices */
+  .btn-back {
+    padding: 10px 14px;
+  }
+  
+  .btn-back .icon-arrow {
+    font-size: 1.3rem;
   }
 }
 
@@ -873,4 +887,84 @@ canvas {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* Back button with icon */
+.btn-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  background: white;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+  transition: all 0.2s;
+  border-radius: 8px;
+}
+
+.btn-back:hover {
+  background: #f5f9ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.icon-arrow {
+  font-style: normal;
+  font-size: 1.2rem;
+  margin-right: 8px;
+  display: inline-block;
+  line-height: 1;
+}
+
+.btn-text {
+  display: inline-block;
+}
+
+/* Responsive styling for back buttons */
+@media (max-width: 768px) {
+  .btn-back {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-back {
+    padding: 8px 12px;
+    min-width: auto;
+    width: auto;
+    font-size: 0.9rem;
+  }
+  
+  /* Hide text on very small screens and make icon-only */
+  .btn-back .btn-text {
+    display: none;
+  }
+  
+  .btn-back .icon-arrow {
+    margin-right: 0;
+    font-size: 1.2rem;
+  }
+  
+  /* Override the full-width button style for back buttons */
+  .btn.btn-back {
+    width: auto;
+    max-width: auto;
+  }
+}
+
+/* Action button with icon */
+.btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+  color: white;
+  gap: 6px;
+}
+
+.btn-action:hover {
+  background: linear-gradient(135deg, var(--gradient-mid), var(--gradient-end));
 }
