@@ -11,15 +11,25 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
     return;
   }
   
-  // Force explicit dimensions if not set
-  if (!gameCanvas.clientWidth || !gameCanvas.clientHeight) {
-    console.log("Canvas dimensions not set, forcing explicit dimensions");
+  // Set up responsive canvas
+  const setCanvasDimensions = () => {
+    // Make canvas fill its container
     gameCanvas.style.width = '100%';
-    gameCanvas.style.height = '500px';
-    gameCanvas.style.minHeight = '500px';
+    
+    // Set height based on viewport width (maintain aspect ratio)
+    const viewportWidth = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    
+    // Adjust height based on device width for better mobile experience
+    const heightValue = viewportWidth < 768 ? '400px' : '500px';
+    gameCanvas.style.height = heightValue;
+    gameCanvas.style.minHeight = heightValue;
     gameCanvas.style.backgroundColor = '#f0f0f0';
     gameCanvas.style.border = '1px solid #ccc';
-  }
+    gameCanvas.style.touchAction = 'none'; // Prevent scrolling while touching canvas
+  };
+  
+  // Apply initial dimensions
+  setCanvasDimensions();
   
   // Clear any existing content
   while (gameCanvas.firstChild) {
@@ -45,10 +55,23 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
   );
   camera.position.z = 10;
   
-  // Create a renderer
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  // Adjust camera for mobile view
+  const adjustCameraForMobile = () => {
+    const isMobile = window.innerWidth < 768;
+    // Adjust camera field of view for mobile
+    camera.fov = isMobile ? 70 : 75;
+    // Adjust z position to fit more on screen for mobile
+    camera.position.z = isMobile ? 10 : 10;
+    camera.updateProjectionMatrix();
+  };
   
-  // Set default size, will be resized after DOM is fully loaded
+  adjustCameraForMobile();
+  
+  // Create a renderer with pixel ratio adjustment for crisp rendering on high-DPI displays
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Limit to 2x for performance
+  
+  // Set default size, will be properly resized later
   renderer.setSize(
     gameCanvas.clientWidth || defaultWidth, 
     gameCanvas.clientHeight || defaultHeight
@@ -82,6 +105,7 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
   let dragOffset = new THREE.Vector3();
   let draggingIndex = -1;
   let correctPositions = 0;
+  let isMobile = window.innerWidth < 768;
   
   // Create number line
   const lineGeometry = new THREE.BoxGeometry(16, 0.1, 0.1);
@@ -115,7 +139,7 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
         const label = i === 0 ? "0" : String(count + 1);
         
         // Create colored cubes with number labels (stored in userData)
-        const labelSize = 0.4;
+        const labelSize = isMobile ? 0.6 : 0.4;
         const labelGeometry = new THREE.BoxGeometry(labelSize, labelSize, labelSize);
         const labelMaterial = new THREE.MeshPhongMaterial({ 
           color: i === 0 ? 0x4285F4 : 0xEA4335, // Blue for start, red for end
@@ -133,10 +157,11 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
         labelDiv.textContent = label;
         labelDiv.style.position = 'absolute';
         labelDiv.style.fontFamily = 'Arial, sans-serif';
-        labelDiv.style.fontSize = '16px';
+        labelDiv.style.fontSize = isMobile ? '20px' : '16px';
         labelDiv.style.fontWeight = 'bold';
         labelDiv.style.color = 'white';
         labelDiv.style.textAlign = 'center';
+        labelDiv.style.textShadow = '2px 2px 4px rgba(0,0,0,0.7)';
         labelDiv.style.pointerEvents = 'none'; // Don't block mouse events
         
         // We'll update the position of these in the render loop
@@ -166,18 +191,67 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
     
     // Create new number boxes in random order at the top of the screen
     const shuffledNumbers = [...numbers].sort(() => Math.random() - 0.5);
-    const boxWidth = 0.8;
-    const spacing = boxWidth * 1.2;
+    
+    // Adjust box size and spacing for mobile
+    const boxWidth = isMobile ? 0.9 : 0.8;
+    const spacing = boxWidth * (isMobile ? 1.3 : 1.2);
     const totalWidth = shuffledNumbers.length * spacing;
     const startX = -totalWidth / 2 + boxWidth / 2;
     
+    // Create a canvas texture for number labels
+    function createNumberTexture(number, color = '#FFFFFF') {
+      const canvas = document.createElement('canvas');
+      const size = 128;
+      canvas.width = size;
+      canvas.height = size;
+      const context = canvas.getContext('2d');
+      
+      // Fill box with gradient
+      const gradient = context.createLinearGradient(0, 0, 0, size);
+      gradient.addColorStop(0, 'rgba(255, 255, 255, 0.1)');
+      gradient.addColorStop(1, 'rgba(0, 0, 0, 0.2)');
+      context.fillStyle = gradient;
+      context.fillRect(0, 0, size, size);
+      
+      // Add number text
+      context.font = `bold ${size/2}px Arial, sans-serif`;
+      context.textAlign = 'center';
+      context.textBaseline = 'middle';
+      
+      // Add shadow for better visibility
+      context.shadowColor = 'rgba(0, 0, 0, 0.8)';
+      context.shadowBlur = 5;
+      context.shadowOffsetX = 2;
+      context.shadowOffsetY = 2;
+      
+      // Draw number
+      context.fillStyle = color;
+      context.fillText(number.toString(), size/2, size/2);
+      
+      return new THREE.CanvasTexture(canvas);
+    }
+    
     shuffledNumbers.forEach((num, index) => {
+      // Create box geometry
       const boxGeometry = new THREE.BoxGeometry(boxWidth, boxWidth, boxWidth);
-      const boxMaterial = new THREE.MeshPhongMaterial({ 
-        color: new THREE.Color(`hsl(${num * 25}, 80%, 65%)`),
-        shininess: 100
-      });
-      const box = new THREE.Mesh(boxGeometry, boxMaterial);
+      
+      // Generate base color for the box
+      const baseColor = new THREE.Color(`hsl(${num * 25}, 80%, 65%)`);
+      
+      // Create materials for each face of the box, with the number on all visible faces
+      const texture = createNumberTexture(num, '#FFFFFF');
+      
+      // Define materials for the cube's six faces
+      const materials = [
+        new THREE.MeshPhongMaterial({ map: texture, color: baseColor, shininess: 100 }),
+        new THREE.MeshPhongMaterial({ map: texture, color: baseColor, shininess: 100 }),
+        new THREE.MeshPhongMaterial({ map: texture, color: baseColor, shininess: 100 }),
+        new THREE.MeshPhongMaterial({ map: texture, color: baseColor, shininess: 100 }),
+        new THREE.MeshPhongMaterial({ map: texture, color: baseColor, shininess: 100 }),
+        new THREE.MeshPhongMaterial({ map: texture, color: baseColor, shininess: 100 }),
+      ];
+      
+      const box = new THREE.Mesh(boxGeometry, materials);
       box.position.x = startX + index * spacing;
       box.position.y = 2;
       box.userData = {
@@ -185,26 +259,9 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
         originalPosition: box.position.clone(),
         isDraggable: true
       };
+      
       scene.add(box);
       numberBoxes.push(box);
-      
-      // Create a HTML-based label for the number
-      const numberLabel = document.createElement('div');
-      numberLabel.textContent = String(num);
-      numberLabel.style.position = 'absolute';
-      numberLabel.style.fontFamily = 'Arial, sans-serif';
-      numberLabel.style.fontSize = '18px';
-      numberLabel.style.fontWeight = 'bold';
-      numberLabel.style.color = 'white';
-      numberLabel.style.textAlign = 'center';
-      numberLabel.style.pointerEvents = 'none'; // Don't block mouse events
-      
-      // We'll update the position of these in the render loop
-      numberLabel.id = `number-${num}-${index}`;
-      gameCanvas.appendChild(numberLabel);
-      
-      // Store reference to the label in userData
-      box.userData.labelElement = numberLabel;
     });
     
     return numberBoxes;
@@ -227,6 +284,9 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
     // For early levels, use sequential numbers
     // For higher levels, use numbers with gaps
     let count = level <= 3 ? 5 : Math.min(7, 3 + level);
+    
+    // On mobile, limit the maximum number of items for better UX
+    if (isMobile && count > 5) count = 5;
     
     if (level <= 2) {
       // Sequential numbers for early levels (1, 2, 3, 4, 5)
@@ -264,16 +324,21 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
   const raycaster = new THREE.Raycaster();
   const mouse = new THREE.Vector2();
   
-  // Convert mouse position to normalized device coordinates
-  function updateMousePosition(event) {
+  // Convert mouse/touch position to normalized device coordinates
+  function updatePointerPosition(event) {
+    // Get the correct coordinates whether it's touch or mouse
+    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+    
     const rect = renderer.domElement.getBoundingClientRect();
-    mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-    mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    mouse.x = ((clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((clientY - rect.top) / rect.height) * 2 + 1;
   }
   
-  // Mouse down event
-  gameCanvas.addEventListener('mousedown', (event) => {
-    updateMousePosition(event);
+  // Mouse/touch down event
+  function onPointerDown(event) {
+    event.preventDefault();
+    updatePointerPosition(event);
     
     // Cast a ray
     raycaster.setFromCamera(mouse, camera);
@@ -298,13 +363,14 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
           .start();
       }
     }
-  });
+  }
   
-  // Mouse move event
-  gameCanvas.addEventListener('mousemove', (event) => {
-    updateMousePosition(event);
-    
+  // Mouse/touch move event
+  function onPointerMove(event) {
+    event.preventDefault();
     if (draggingBox) {
+      updatePointerPosition(event);
+      
       // Cast a ray
       raycaster.setFromCamera(mouse, camera);
       const planeZ = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
@@ -315,10 +381,11 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
       draggingBox.position.x = intersectionPoint.x + dragOffset.x;
       draggingBox.position.y = intersectionPoint.y + dragOffset.y;
     }
-  });
+  }
   
-  // Mouse up event
-  gameCanvas.addEventListener('mouseup', () => {
+  // Mouse/touch up event
+  function onPointerUp(event) {
+    event.preventDefault();
     if (draggingBox) {
       // Check if the box is close to any slot
       let closestSlot = null;
@@ -337,6 +404,7 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
         new TWEEN.Tween(draggingBox.position)
           .to({ x: closestSlot.x, y: closestSlot.y, z: 0 }, 200)
           .easing(TWEEN.Easing.Quadratic.Out)
+          .onComplete(() => onBoxPlaced())
           .start();
       } else {
         // Return to original position
@@ -359,29 +427,23 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
       draggingBox = null;
       draggingIndex = -1;
     }
-  });
+  }
+  
+  // Support both mouse and touch events
+  gameCanvas.addEventListener('mousedown', onPointerDown);
+  gameCanvas.addEventListener('mousemove', onPointerMove);
+  gameCanvas.addEventListener('mouseup', onPointerUp);
+  gameCanvas.addEventListener('mouseleave', onPointerUp);
+  
+  // Touch events for mobile
+  gameCanvas.addEventListener('touchstart', onPointerDown, { passive: false });
+  gameCanvas.addEventListener('touchmove', onPointerMove, { passive: false });
+  gameCanvas.addEventListener('touchend', onPointerUp, { passive: false });
+  gameCanvas.addEventListener('touchcancel', onPointerUp, { passive: false });
   
   // Update HTML label positions based on 3D object positions
   function updateLabelPositions() {
-    // Update number labels on boxes
-    numberBoxes.forEach(box => {
-      if (box.userData.labelElement) {
-        const vector = new THREE.Vector3();
-        vector.setFromMatrixPosition(box.matrixWorld);
-        vector.project(camera);
-        
-        const widthHalf = renderer.domElement.width / 2;
-        const heightHalf = renderer.domElement.height / 2;
-        
-        const x = (vector.x * widthHalf) + widthHalf;
-        const y = -(vector.y * heightHalf) + heightHalf;
-        
-        box.userData.labelElement.style.left = `${x}px`;
-        box.userData.labelElement.style.top = `${y}px`;
-      }
-    });
-    
-    // Update labels at the ends of the number line
+    // Only update the end labels (0 and max)
     for (let i = 0; i <= 1; i++) {
       const labelElement = document.getElementById(`label-${i * (currentNumbers.length + 1)}`);
       if (labelElement) {
@@ -403,6 +465,19 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
           
           labelElement.style.left = `${x}px`;
           labelElement.style.top = `${y}px`;
+          
+          // Ensure label is centered on the box
+          labelElement.style.transform = 'translate(-50%, -50%)';
+          labelElement.style.width = isMobile ? '36px' : '30px';
+          labelElement.style.height = isMobile ? '36px' : '30px';
+          labelElement.style.lineHeight = isMobile ? '36px' : '30px';
+          
+          // Add background for better visibility on any color
+          labelElement.style.backgroundColor = 'rgba(0,0,0,0.5)';
+          labelElement.style.borderRadius = '50%';
+          labelElement.style.display = 'flex';
+          labelElement.style.justifyContent = 'center';
+          labelElement.style.alignItems = 'center';
         }
       }
     }
@@ -449,10 +524,20 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
           )
           .start();
         
-        // Color change to green
-        new TWEEN.Tween(box.material.color)
-          .to(new THREE.Color(0x00FF00), 300)
-          .start();
+        // Color change to green - handle both single material and material array cases
+        if (Array.isArray(box.material)) {
+          // For material array (texture-based boxes)
+          box.material.forEach(mat => {
+            new TWEEN.Tween(mat.color)
+              .to(new THREE.Color(0x00FF00), 300)
+              .start();
+          });
+        } else if (box.material && box.material.color) {
+          // For single material
+          new TWEEN.Tween(box.material.color)
+            .to(new THREE.Color(0x00FF00), 300)
+            .start();
+        }
       });
       
       // Show success message
@@ -480,6 +565,69 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
     }
   }
   
+  // Add auto-check for correct positions
+  function checkCorrectPositions() {
+    // Check if all boxes are in slots
+    let allInSlots = true;
+    let boxesInSlots = 0;
+    
+    // Create a map of boxes at each slot
+    const slotMap = new Map();
+    slots.forEach((slot, index) => {
+      slotMap.set(index, null);
+    });
+    
+    // Find which boxes are in slots
+    numberBoxes.forEach(box => {
+      let isInSlot = false;
+      slots.forEach((slot, index) => {
+        if (box.position.distanceTo(slot) < 0.5) {
+          slotMap.set(index, box);
+          isInSlot = true;
+          boxesInSlots++;
+        }
+      });
+      if (!isInSlot) {
+        allInSlots = false;
+      }
+    });
+    
+    // Update UI feedback
+    if (allInSlots && boxesInSlots === slots.length) {
+      // All boxes in slots, provide visual cue that checking is available
+      submitButton.style.backgroundColor = '#4CAF50'; // Green
+      submitButton.style.transform = 'scale(1.05)';
+      submitButton.style.boxShadow = '0 0 10px rgba(76, 175, 80, 0.7)';
+    } else {
+      // Not all boxes in slots
+      submitButton.style.backgroundColor = '';
+      submitButton.style.transform = '';
+      submitButton.style.boxShadow = '';
+    }
+    
+    return allInSlots && boxesInSlots === slots.length;
+  }
+  
+  // Auto-submit when all boxes are correctly positioned and stable
+  function tryAutoSubmit() {
+    // Only auto-submit if all boxes are in slots and not being dragged
+    if (draggingBox === null && checkCorrectPositions()) {
+      // Wait a short delay to ensure the user has finished the arrangement
+      setTimeout(() => {
+        // Double-check that nothing changed during the delay
+        if (draggingBox === null && checkCorrectPositions()) {
+          checkAnswers();
+        }
+      }, 1000);
+    }
+  }
+  
+  // Add listener for when a box is dropped into position
+  function onBoxPlaced() {
+    checkCorrectPositions();
+    tryAutoSubmit();
+  }
+  
   // Event listeners
   console.log("Setting up event listeners");
   submitButton.addEventListener('click', checkAnswers);
@@ -505,18 +653,41 @@ export function setupNumberLine(gameCanvas, questionContainer, answerInput, subm
     renderer.render(scene, camera);
   }
   
-  // Resize handler to ensure proper rendering dimensions
+  // Improved resize handler to ensure proper rendering dimensions
   function handleResize() {
+    // Update isMobile state
+    isMobile = window.innerWidth < 768;
+    
+    // Update canvas dimensions
+    setCanvasDimensions();
+    
+    // Update camera for mobile/desktop view
+    adjustCameraForMobile();
+    
     if (gameCanvas.clientWidth > 0 && gameCanvas.clientHeight > 0) {
       console.log("Resizing:", gameCanvas.clientWidth, gameCanvas.clientHeight);
       camera.aspect = gameCanvas.clientWidth / gameCanvas.clientHeight;
       camera.updateProjectionMatrix();
-      renderer.setSize(gameCanvas.clientWidth, gameCanvas.clientHeight);
+      renderer.setSize(gameCanvas.clientWidth, gameCanvas.clientHeight, false);
+      
+      // Force regenerate the current level with updated mobile settings
+      generateQuestion();
     }
   }
   
   // Handle window resize
-  window.addEventListener('resize', handleResize);
+  window.addEventListener('resize', debounce(handleResize, 250));
+  
+  // Debounce function to prevent too many resize events
+  function debounce(func, wait) {
+    let timeout;
+    return function() {
+      const context = this;
+      const args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+  }
   
   // Force a resize after a delay to ensure DOM layout is complete
   setTimeout(handleResize, 100);
