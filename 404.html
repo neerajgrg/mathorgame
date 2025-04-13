@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redirecting... - MathOrGame</title>
+  <script>
+    // SPA redirect script for GitHub Pages
+    // Handle client-side routing by redirecting all 404s to index.html
+    (function() {
+      // Get current location (excluding query string and hash)
+      const path = window.location.pathname;
+
+      // If this is a GitHub Pages site, get the repo name from the path
+      // and prefix it to the redirect path
+      const segments = path.split('/');
+      let redirectPath = '/';
+      
+      // If path has more than 2 segments and the first segment is empty
+      // (because paths start with '/'), then it's likely a GitHub Pages site
+      if (segments.length > 2 && segments[0] === '') {
+        // The repo name is the first non-empty segment
+        const repoName = segments[1];
+        // Preserve the full path (including repo name)
+        redirectPath = '/' + repoName;
+      }
+
+      // Preserve query and hash if any
+      const query = window.location.search || '';
+      const hash = window.location.hash || '';
+      
+      // Redirect to the index.html with the full path
+      window.location.href = redirectPath + '/index.html' + query + hash;
+    })();
+  </script>
+  <style>
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9ff;
+      color: #1e293b;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .container {
+      max-width: 500px;
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(67, 97, 238, 0.15);
+    }
+    
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      background: linear-gradient(90deg, #4361ee, #7209b7);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-block;
+    }
+    
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">🔄</div>
+    <h1>Redirecting...</h1>
+    <p>Just a moment, we're taking you to the right page.</p>
+    <p>If you're not redirected automatically, <a href="./index.html">click here</a>.</p>
+  </div>
+</body>
+</html> 

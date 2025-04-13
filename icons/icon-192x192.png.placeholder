@@ -1,0 +1,8 @@
+This is a placeholder file.
+
+To generate the actual icons, you can:
+
+1. Use the generate-icons.js script (requires Node.js and the canvas package)
+2. Create your own custom icons using a design tool like Figma, Photoshop, etc.
+
+A proper PWA requires icons in various sizes as specified in the manifest.json file. 
